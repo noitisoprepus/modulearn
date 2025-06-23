@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     zIndex: 100, // Always on top
   },
   greeting: {
+    fontFamily: 'GermaniaOne',
     fontSize: 24,
     fontWeight: "600",
     color: colors.lightText,
