@@ -1,3 +1,4 @@
+import Card from "@/components/interactive/Card";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { Text, View } from "react-native";
 
@@ -14,6 +15,14 @@ export default function Index() {
         }}
       >
         <Text>Edit app/index.tsx to edit this screen.</Text>
+        <Card
+          imgSource={require("@/assets/images/react-logo.png")}
+          module="Module: 1"
+          title="Introduction to STS"
+          onPress={() => {
+            console.log("Card pressed!");
+          }}
+        />
       </View>
     </ScreenWrapper>
   );
