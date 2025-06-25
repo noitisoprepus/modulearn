@@ -10,14 +10,19 @@ import {
 } from "react-native";
 import Spacer from "../Spacer";
 
-type CardProps = {
+type PressableCardProps = {
   imgSource: ImageSourcePropType;
   module: string;
   title: string;
   onPress: () => void;
 };
 
-export default function Card({ imgSource, module, title, onPress }: CardProps) {
+export default function PressableCard({
+  imgSource,
+  module,
+  title,
+  onPress,
+}: PressableCardProps) {
   return (
     <Pressable style={styles.card} onPress={onPress}>
       <Image source={imgSource} style={styles.image} />
