@@ -1,4 +1,5 @@
 import { colors } from "@/styles/colors";
+import { router } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -14,17 +15,23 @@ type PressableCardProps = {
   imgSource: ImageSourcePropType;
   module: string;
   title: string;
-  onPress: () => void;
 };
 
 export default function PressableCard({
   imgSource,
   module,
   title,
-  onPress,
 }: PressableCardProps) {
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      style={styles.card}
+      onPress={() =>
+        router.navigate({
+          pathname: "/module/[title]",
+          params: { title: title },
+        })
+      }
+    >
       <Image source={imgSource} style={styles.image} />
       <View style={styles.titles}>
         <Text style={styles.text}>{module}</Text>
@@ -47,5 +54,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     fontWeight: "500",
+    fontFamily: "KantumruyProMedium",
   },
 });
