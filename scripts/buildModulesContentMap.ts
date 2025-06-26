@@ -9,12 +9,17 @@
  * to ensure that all module data and assets are properly bundled into the build.
  */
 
+const fs = require('fs');
 
-function findModuleJSONs() {
-    // get all JSON files inside './assets/modules'
-}
+// I'll refactor these later
 
-function generateModuleContentMap() {
-    // generate a TypeScript file and place it in './data'
-    // the file will contain
-}
+// 1. get all JSON files inside './assets/modules'
+const modulesDirPath = './assets/modules';
+const files = fs.readdirSync(modulesDirPath);
+console.log(files);
+
+// 2. iterate through each json files, and read its content
+// the id will act as the key for the json map
+// scan for all mentions of media file paths
+
+// n. generate a TypeScript file and place it in './data'
