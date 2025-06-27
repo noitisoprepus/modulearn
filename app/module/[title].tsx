@@ -1,4 +1,6 @@
 import DynamicText from "@/components/DynamicText";
+import InfoCard from "@/components/InfoCard";
+import RecallCard from "@/components/interactive/RecallCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { useLocalSearchParams } from "expo-router";
@@ -22,13 +24,14 @@ export default function Module() {
           Module 1: Introduction to STS
         </DynamicText>
         <Spacer size={20} />
-
         <DynamicText>
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur
           dolores eveniet deleniti natus exercitationem officiis nihil obcaecati
           ratione maiores, velit dolorum nobis optio reprehenderit maxime
           reiciendis debitis fugit atque itaque.
         </DynamicText>
+        <RecallCard />
+        <InfoCard />
       </View>
     </ScreenWrapper>
   );
@@ -40,3 +43,5 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
 });
+
+// TODO : recall, info card, fetch data, additional sections (new page)
