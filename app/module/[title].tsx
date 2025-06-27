@@ -31,7 +31,8 @@ export default function Module() {
           reiciendis debitis fugit atque itaque.
         </DynamicText>
         <RecallCard />
-        <InfoCard />
+        <InfoCard variant="fact" />
+        <InfoCard variant="remember" />
       </View>
     </ScreenWrapper>
   );

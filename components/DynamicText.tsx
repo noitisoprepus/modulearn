@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, TextStyle } from "react-native";
+import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
 type TextVariant = "header" | "paragraph" | "caption";
 
 type DynamicTextProps = {
   variant?: TextVariant;
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 };
 
 export default function DynamicText({

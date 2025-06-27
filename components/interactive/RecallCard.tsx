@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import DynamicText from "../DynamicText";
 import Spacer from "../Spacer";
 
 export default function RecallCard() {
@@ -31,17 +32,10 @@ export default function RecallCard() {
     <View style={styles.card}>
       <View style={styles.layout}>
         <View style={styles.textLayout}>
-          <Text
-            style={[
-              styles.text,
-              {
-                fontFamily: "KantumruyProBold",
-              },
-            ]}
-          >
+          <DynamicText variant="header" style={{ fontSize: 16 }}>
             Active Recall:
-          </Text>
-          <Text style={styles.text}>Lorem ipsum dolor sit amet?</Text>
+          </DynamicText>
+          <DynamicText>Lorem ipsum dolor sit amet?</DynamicText>
         </View>
         <Spacer size={10} />
         <View style={styles.inputs}>
