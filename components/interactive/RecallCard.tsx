@@ -1,6 +1,13 @@
 import { colors } from "@/styles/colors";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import Spacer from "../Spacer";
 
 export default function RecallCard() {
@@ -16,6 +23,7 @@ export default function RecallCard() {
     } else {
       console.log("Correct");
       setIsCorrect(true);
+      Keyboard.dismiss();
     }
   }
 
@@ -41,7 +49,6 @@ export default function RecallCard() {
             style={styles.textInput}
             inputMode={isCorrect ? "none" : "text"}
             onChangeText={(text) => setValue(text)}
-            autoFocus
           />
           {isCorrect ? (
             <View
