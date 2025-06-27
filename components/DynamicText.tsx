@@ -44,10 +44,8 @@ const styles = StyleSheet.create({
     fontFamily: "KantumruyProRegular",
   },
   caption: {
-    fontStyle: "italic",
-    letterSpacing: -5,
-    fontWeight: "light",
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: "KantumruyProLightItalic",
+    letterSpacing: -0.5,
   },
 });
