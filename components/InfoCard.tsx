@@ -4,26 +4,27 @@ import { StyleSheet, View } from "react-native";
 import DynamicText from "./DynamicText";
 import Spacer from "./Spacer";
 
-type InfoCardVariant = "fact" | "remember";
+type InfoCardVariant = "trivia" | "remember";
 
 type InfoCardProps = {
   variant: InfoCardVariant;
+  content: string;
 };
 
-export default function InfoCard({ variant = "fact" }: InfoCardProps) {
+export default function InfoCard({
+  variant = "trivia",
+  content,
+}: InfoCardProps) {
   return (
     <>
-      {variant === "fact" ? (
-        <View style={[styles.card, { backgroundColor: colors.cardFacts }]}>
+      {variant === "trivia" ? (
+        <View style={[styles.card, { backgroundColor: colors.cardTrivia }]}>
           <DynamicText variant="header" style={{ fontSize: 16 }}>
             Did you know?
           </DynamicText>
           <Spacer size={10} />
           <DynamicText variant="paragraph" style={{ fontSize: 16 }}>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni
-            voluptate dolores temporibus! Sed eos nostrum dolores sequi
-            asperiores a adipisci aut, porro neque dicta, molestiae praesentium!
-            Non possimus magnam quisquam?
+            {content}
           </DynamicText>
         </View>
       ) : (
@@ -33,10 +34,7 @@ export default function InfoCard({ variant = "fact" }: InfoCardProps) {
           </DynamicText>
           <Spacer size={10} />
           <DynamicText variant="paragraph" style={{ fontSize: 16 }}>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni
-            voluptate dolores temporibus! Sed eos nostrum dolores sequi
-            asperiores a adipisci aut, porro neque dicta, molestiae praesentium!
-            Non possimus magnam quisquam?
+            {content}
           </DynamicText>
         </View>
       )}

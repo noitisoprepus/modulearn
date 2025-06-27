@@ -11,11 +11,15 @@ import {
 import DynamicText from "../DynamicText";
 import Spacer from "../Spacer";
 
-export default function RecallCard() {
+type RecallCardProp = {
+  question: string;
+  answer: string;
+};
+
+export default function RecallCard({ question, answer }: RecallCardProp) {
   const [value, setValue] = useState("");
   const [isCorrect, setIsCorrect] = useState(Boolean);
   const isDisabled = value.length === 0;
-  const answer: string = "answer";
 
   function submitAnswer() {
     if (value !== answer) {
@@ -35,7 +39,7 @@ export default function RecallCard() {
           <DynamicText variant="header" style={{ fontSize: 16 }}>
             Active Recall:
           </DynamicText>
-          <DynamicText>Lorem ipsum dolor sit amet?</DynamicText>
+          <DynamicText>{question}</DynamicText>
         </View>
         <Spacer size={10} />
         <View style={styles.inputs}>

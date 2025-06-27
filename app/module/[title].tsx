@@ -1,12 +1,9 @@
-import CaptionedImage from "@/components/CaptionedImage";
-import DynamicText from "@/components/DynamicText";
-import InfoCard from "@/components/InfoCard";
-import RecallCard from "@/components/interactive/RecallCard";
+import Section from "@/components/interactive/Section";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 export default function Module() {
   const { title } = useLocalSearchParams();
@@ -21,46 +18,58 @@ export default function Module() {
   return (
     <ScreenWrapper showAppBar appBarTitle={parsedTitle}>
       <ScrollView style={styles.page}>
-        {/* can turn this into section component */}
-        <DynamicText variant="header">
-          Module 1: Introduction to STS
-        </DynamicText>
-        <Spacer size={20} />
-        <View style={styles.layout}>
-          <DynamicText>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-            Consectetur dolores eveniet deleniti natus exercitationem officiis
-            nihil obcaecati ratione maiores, velit dolorum nobis optio
-            reprehenderit maxime reiciendis debitis fugit atque itaque.
-          </DynamicText>
-          <CaptionedImage
-            imgSrc={require("@/assets/images/raccoon.webp")}
-            caption="a raccoon taking a selfie"
-          />
-          <DynamicText>
-            Animi a repellat ea illo dignissimos minima at perferendis,
-            molestiae consequatur ad maiores est culpa odio eum libero
-            quibusdam, repudiandae quis blanditiis.
-          </DynamicText>
-          <RecallCard />
-          <DynamicText variant="header">I. Lorem Ipsum</DynamicText>
-          {/* need to not be affected by gap */}
-          <DynamicText>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            commodi illum praesentium impedit nulla ea debitis corrupti quae.
-            Aperiam alias accusamus aspernatur ex? Vitae eum debitis delectus
-            expedita. Obcaecati, ea? Animi a repellat ea illo dignissimos minima
-            at perferendis, molestiae consequatur ad maiores est culpa odio eum
-            libero quibusdam, repudiandae quis blanditiis.
-          </DynamicText>
-          <InfoCard variant="fact" />
-          <DynamicText>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus,
-            recusandae et tenetur iste tempora obcaecati.
-          </DynamicText>
-          <InfoCard variant="remember" />
-          <Spacer size={150} />
-        </View>
+        <Section
+          sectionTitle="Module 1: Introduction to STS"
+          content={[
+            {
+              type: "text",
+              content:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+            {
+              type: "image",
+              src: require("@/assets/images/raccoon.webp"),
+              caption:
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            },
+            {
+              type: "text",
+              content:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+            {
+              type: "active-recall",
+              question: "Sample active recall question",
+              answer: "Sample answer",
+            },
+          ]}
+        />
+        <Section
+          sectionTitle="I. Lorem Ipsum"
+          content={[
+            {
+              type: "text",
+              content:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            },
+            {
+              type: "trivia",
+              content:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+            {
+              type: "text",
+              content:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            },
+            {
+              type: "remember",
+              content:
+                "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+            },
+          ]}
+        />
+        <Spacer size={80} />
       </ScrollView>
     </ScreenWrapper>
   );
@@ -70,9 +79,6 @@ const styles = StyleSheet.create({
   page: {
     paddingHorizontal: 10,
     paddingVertical: 20,
-  },
-  layout: {
-    gap: 30,
   },
 });
 

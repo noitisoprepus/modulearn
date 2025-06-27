@@ -11,7 +11,7 @@ export const colors = {
   cardDefault: "#EFEFEF",
   cardRecall: "#C5F9FF",
   cardRemember: "#E4DBFF",
-  cardFacts: "#FFFF9D",
+  cardTrivia: "#FFFF9D",
   cardCorrect: "#9DFFC6",
   cardAnswer: "#D32335",
 

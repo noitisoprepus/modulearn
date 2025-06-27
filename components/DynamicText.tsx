@@ -47,5 +47,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "KantumruyProLightItalic",
     letterSpacing: -0.5,
+    maxWidth: 220,
+    wordWrap: "wrap",
+    textAlign: "center",
   },
 });
