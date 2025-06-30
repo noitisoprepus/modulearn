@@ -1,5 +1,4 @@
 import { colors } from "@/styles/colors";
-import { router } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -15,22 +14,19 @@ type PressableCardProps = {
   imgSource: ImageSourcePropType;
   module: string;
   title: string;
+  onPress: () => void;
 };
 
 export default function PressableCard({
   imgSource,
   module,
   title,
+  onPress,
 }: PressableCardProps) {
   return (
     <Pressable
       style={styles.card}
-      onPress={() =>
-        router.navigate({
-          pathname: "/module/[title]",
-          params: { title: title },
-        })
-      }
+      onPress={onPress}
     >
       <Image source={imgSource} style={styles.image} />
       <View style={styles.titles}>
