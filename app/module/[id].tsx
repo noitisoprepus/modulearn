@@ -1,23 +1,24 @@
 import Section from "@/components/interactive/Section";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
+import { modules } from "@/data/modulesContentMap";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
 export default function Module() {
-  const { title } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
-  const parsedTitle =
-    typeof title === "string"
-      ? title
-      : Array.isArray(title)
-      ? title[0]
-      : undefined;
+  const moduleData = modules.find((module) => module.id === id);
+
+  if (!moduleData) return null;
+
+  // TODO: Implement a handler/provider (not sure what to call it) that will track and feed each topic from moduleData.data into this screen
 
   return (
-    <ScreenWrapper showAppBar appBarTitle={parsedTitle}>
+    <ScreenWrapper showAppBar appBarTitle={moduleData.title}>
       <ScrollView style={styles.page}>
+        // TODO: Use moduleData.data to get the sections
         <Section
           sectionTitle="Module 1: Introduction to STS"
           content={[
