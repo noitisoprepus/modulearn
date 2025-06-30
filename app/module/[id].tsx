@@ -13,12 +13,11 @@ export default function Module() {
 
   if (!moduleData) return null;
 
-  // TODO: Implement a handler/provider (not sure what to call it) that will track and feed each topic from moduleData.data into this screen
+  // TODO: Implement a handler/provider (not sure what to call it) that will track, feed, and navigate through each topic from moduleData.data as a page into this screen
 
   return (
     <ScreenWrapper showAppBar appBarTitle={moduleData.title}>
       <ScrollView style={styles.page}>
-        // TODO: Use moduleData.data to get the sections
         <Section
           sectionTitle="Module 1: Introduction to STS"
           content={[
@@ -82,5 +81,3 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
 });
-
-// TODO : fetch data, additional sections (new page)
