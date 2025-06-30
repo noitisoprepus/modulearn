@@ -22,7 +22,7 @@ const outputPath = './data/modulesContentMap.ts';
 const importJsonLines: string[] = [];
 const importImageLines: string[] = [];
 const moduleObjects: string[] = [];
-const mediaList: string[] = [];
+const mediaObjects: string[] = [];
 
 // Utility to remove a directory and its contents
 async function cleanDirectory(dirPath: string) {
@@ -125,7 +125,7 @@ if (!zipFilePath || path.extname(zipFilePath) !== '.zip') {
 			foundImages.forEach((imgFileName) => {
 				const imageBaseName = path.basename(imgFileName, path.extname(imgFileName));
 				importImageLines.push(`const ${imageBaseName} = require('@/assets/modules/media/${imgFileName}');`);
-				mediaList.push(imageBaseName);
+				mediaObjects.push(imageBaseName);
 			});
 
 			// Compose TypeScript code for importing and mapping the module
@@ -140,7 +140,10 @@ if (!zipFilePath || path.extname(zipFilePath) !== '.zip') {
 	}
 
 	// Step 3: Compose output TypeScript file
-	const outputContent = `${importJsonLines.join('\n')}
+	const outputContent = `
+import { ImageSourcePropType } from "react-native";
+
+${importJsonLines.join('\n')}
 
 ${importImageLines.join('\n')}
 
@@ -148,9 +151,9 @@ export const modules = [
   ${moduleObjects.join(',\n  ')}
 ];
 
-export const media = [
-	${mediaList.join(',\n  ')}
-]`;
+export const media: { [key: string]: ImageSourcePropType } = {
+	${mediaObjects.join(',\n  ')}
+}`;
 
 	await fs.writeFile(outputPath, outputContent);
 	console.log(`Successfully generated modules content map in './data/modulesContentMap.ts'`);
