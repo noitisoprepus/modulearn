@@ -1,10 +1,10 @@
 import Section from "@/components/interactive/Section";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
+import Wrapper from "@/components/Wrapper";
 import { modules } from "@/data/modulesContentMap";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
 
 export default function Module() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -16,8 +16,8 @@ export default function Module() {
   // TODO: Implement a handler/provider (not sure what to call it) that will track, feed, and navigate through each topic from moduleData.data as a page into this screen
 
   return (
-    <ScreenWrapper showAppBar appBarTitle={moduleData.title}>
-      <ScrollView style={styles.page}>
+    <ScreenWrapper scrollable showAppBar appBarTitle={moduleData.title}>
+      <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
         <Section
           sectionTitle="Module 1: Introduction to STS"
           content={[
@@ -70,14 +70,7 @@ export default function Module() {
           ]}
         />
         <Spacer size={80} />
-      </ScrollView>
+      </Wrapper>
     </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-  },
-});
