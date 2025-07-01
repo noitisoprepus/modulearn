@@ -22,6 +22,7 @@ export default function Index() {
                 : require("@/assets/images/react-logo.png"); // fallback
           return (
             <PressableCard
+              key={module.id}
               imgSource={image}
               module={`Module ${index}`}
               title={module.title}
