@@ -1,5 +1,6 @@
+import { media } from "@/data/modulesContentMap";
 import React from "react";
-import { ImageSourcePropType, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CaptionedImage from "../CaptionedImage";
 import DynamicText from "../DynamicText";
 import InfoCard from "../InfoCard";
@@ -13,7 +14,7 @@ type TextBlock = {
 
 type ImageBlock = {
   type: "image";
-  src: ImageSourcePropType;
+  src: string;
   caption: string;
 };
 
@@ -48,11 +49,13 @@ export default function Section({ sectionTitle, content }: SectionProps) {
                 </DynamicText>
               );
             case "image":
+              // Extract the file base name from a file path
+              const filename = block.src.replace(/^.*[\\/]/, "").replace(/\.[^/.]+$/, "");
               return (
                 <CaptionedImage
                   key={index}
                   caption={block.caption}
-                  imgSrc={block.src}
+                  imgSrc={media[filename]}
                 />
               );
             case "remember":
