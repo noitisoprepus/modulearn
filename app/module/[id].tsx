@@ -14,61 +14,20 @@ export default function Module() {
   if (!moduleData) return null;
 
   // TODO: Implement a handler/provider (not sure what to call it) that will track, feed, and navigate through each topic from moduleData.data as a page into this screen
+  const moduleTopics = moduleData.data["topics"];
 
   return (
     <ScreenWrapper scrollable showAppBar appBarTitle={moduleData.title}>
       <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
-        <Section
-          sectionTitle="Module 1: Introduction to STS"
-          content={[
-            {
-              type: "text",
-              content:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            },
-            {
-              type: "image",
-              src: require("@/assets/images/raccoon.webp"),
-              caption:
-                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            },
-            {
-              type: "text",
-              content:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            },
-            {
-              type: "active-recall",
-              question: "Sample active recall question",
-              answer: "Sample answer",
-            },
-          ]}
-        />
-        <Section
-          sectionTitle="I. Lorem Ipsum"
-          content={[
-            {
-              type: "text",
-              content:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            },
-            {
-              type: "trivia",
-              content:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            },
-            {
-              type: "text",
-              content:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            },
-            {
-              type: "remember",
-              content:
-                "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-            },
-          ]}
-        />
+        {moduleTopics.map((topic, index: number) => {
+          return (
+            <Section
+              key={index}
+              sectionTitle={topic.title}
+              content={topic.sections}
+            />
+          );
+        })}
         <Spacer size={80} />
       </Wrapper>
     </ScreenWrapper>
