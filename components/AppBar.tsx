@@ -1,5 +1,6 @@
 import { colors } from "@/styles/colors";
 import { StyleSheet, Text, View } from "react-native";
+import TextToSpeechButton from "./interactive/TextToSpeechButton";
 
 type AppBarProps = {
   title?: string;
@@ -9,6 +10,7 @@ export default function AppBar({ title }: AppBarProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>{title}</Text>
+      <TextToSpeechButton />
     </View>
   );
 }
@@ -31,5 +33,3 @@ const styles = StyleSheet.create({
     color: colors.lightText,
   },
 });
-
-// TODO : add TTS button
