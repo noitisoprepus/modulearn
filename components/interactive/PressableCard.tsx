@@ -24,14 +24,11 @@ export default function PressableCard({
   onPress,
 }: PressableCardProps) {
   return (
-    <Pressable
-      style={styles.card}
-      onPress={onPress}
-    >
+    <Pressable style={styles.card} onPress={onPress}>
       <Image source={imgSource} style={styles.image} />
       <View style={styles.titles}>
         <Text style={styles.text}>{module}</Text>
-        <Spacer size={20} />
+        <Spacer size={10} />
         <Text style={styles.text}>{title}</Text>
       </View>
     </Pressable>
@@ -39,16 +36,25 @@ export default function PressableCard({
 }
 
 const styles = StyleSheet.create({
-  image: { flex: 0, height: 177, width: 200 },
-  titles: { paddingHorizontal: 15, paddingVertical: 10 },
+  image: {
+    objectFit: "cover",
+    height: 150,
+    width: "100%",
+    maxWidth: "100%",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  titles: { padding: 10 },
   card: {
     borderRadius: 10,
     backgroundColor: colors.cardDefault,
     elevation: 6,
     shadowColor: colors.shadow,
+    height: 250,
+    width: 170,
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
     fontFamily: "KantumruyProMedium",
   },
