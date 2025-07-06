@@ -19,7 +19,7 @@ export default function Module() {
   return (
     <ScreenWrapper scrollable showAppBar appBarTitle={moduleData.title}>
       <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
-        {moduleTopics.map((topic, index: number) => {
+        {moduleTopics.map((topic: any, index: number) => {
           return (
             <Section
               key={index}
