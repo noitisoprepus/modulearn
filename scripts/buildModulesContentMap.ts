@@ -164,6 +164,10 @@ export const media: { [key: string]: ImageSourcePropType } = {
 	${mediaObjects.join(",\n  ")}
 }`;
 
+	// Ensure that the output directory exists
+	await fs.mkdir(path.dirname(outputPath), { recursive: true });
+
+	// Write the output file
   await fs.writeFile(outputPath, outputContent);
   console.log(
     `Successfully generated modules content map in './data/modulesContentMap.ts'`
