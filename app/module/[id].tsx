@@ -5,10 +5,11 @@ import Spacer from "@/components/Spacer";
 import Wrapper from "@/components/Wrapper";
 import { modules } from "@/data/modulesContentMap";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Module() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const moduleData = modules.find((module) => module.id === id);
 
@@ -17,28 +18,41 @@ export default function Module() {
   // TODO: Implement a handler/provider (not sure what to call it) that will track, feed, and navigate through each topic from moduleData.data as a page into this screen
   const moduleTopics = moduleData.data["topics"];
 
-  // play around index in pagination
-  console.log(moduleTopics[0]);
+  const handleNext = () => {
+    if (currentIndex < moduleTopics.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const currentTopic = moduleTopics[currentIndex];
 
   return (
     <>
       <ScreenWrapper scrollable showAppBar appBarTitle={moduleData.title}>
         <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
-          {moduleTopics.map((topic: any, index: number) => {
-            return (
-              <Section
-                key={index}
-                sectionTitle={topic.title}
-                content={topic.sections}
-              />
-            );
-          })}
+          <Section
+            sectionTitle={currentTopic.title}
+            content={currentTopic.sections}
+          />
           <Spacer size={80} />
         </Wrapper>
       </ScreenWrapper>
       {/* for some reason, putting the navbar inside screen wrapper
           makes it not float  */}
-      <NavBar />
+      <NavBar
+        onNext={handleNext}
+        onPrev={handlePrev}
+        currentIndex={currentIndex}
+        sections={moduleTopics.length}
+      />
     </>
   );
 }
+
+// navbar updates index if ++ or --

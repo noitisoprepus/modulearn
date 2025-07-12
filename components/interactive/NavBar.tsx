@@ -1,10 +1,91 @@
+import { colors } from "@/styles/colors";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import DynamicText from "../DynamicText";
 
-export default function NavBar() {
+type NavBarProps = {
+  onNext: () => void;
+  onPrev: () => void;
+  sections: number;
+  currentIndex: number;
+};
+
+export default function NavBar({
+  onPrev,
+  onNext,
+  sections,
+  currentIndex,
+}: NavBarProps) {
   return (
     <View style={styles.layout}>
-      <Text>NavBarasdasdasd</Text>
+      <View style={styles.items}>
+        <Pressable onPress={onPrev} disabled={currentIndex < 0}>
+          <DynamicText
+            style={
+              currentIndex === 0
+                ? { color: colors.disabledText, fontWeight: "bold" }
+                : {
+                    color: colors.lightText,
+                    fontWeight: "bold",
+                  }
+            }
+          >
+            Prev Page
+          </DynamicText>
+        </Pressable>
+        <DynamicText
+          style={{
+            color: colors.lightText,
+            fontWeight: "black",
+          }}
+        >
+          |
+        </DynamicText>
+        <Pressable
+          disabled={currentIndex !== sections - 1}
+          onPress={() => {
+            console.log("quiz");
+          }}
+        >
+          <DynamicText
+            style={
+              currentIndex === sections - 1
+                ? {
+                    color: colors.lightText,
+                    fontWeight: "bold",
+                  }
+                : {
+                    color: colors.disabledText,
+                    fontWeight: "bold",
+                  }
+            }
+          >
+            Quiz
+          </DynamicText>
+        </Pressable>
+        <DynamicText
+          style={{
+            color: colors.lightText,
+            fontWeight: "black",
+          }}
+        >
+          |
+        </DynamicText>
+        <Pressable onPress={onNext}>
+          <DynamicText
+            style={
+              currentIndex === sections - 1
+                ? { color: colors.disabledText, fontWeight: "bold" }
+                : {
+                    color: colors.lightText,
+                    fontWeight: "bold",
+                  }
+            }
+          >
+            Next Page
+          </DynamicText>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -12,13 +93,24 @@ export default function NavBar() {
 const styles = StyleSheet.create({
   layout: {
     position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: 200,
-    height: 100,
-    backgroundColor: "red",
-    alignItems: "center",
-    justifyContent: "center",
+    bottom: "5%",
+    left: "50%",
+    transform: [{ translateX: -160 }],
+    width: 320,
+    height: 45,
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  items: {
+    display: "flex",
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
+
+// might reuse pressable card onpress method for navigating between sections
+// add debouncer
