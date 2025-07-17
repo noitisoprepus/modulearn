@@ -1,4 +1,5 @@
 import { colors } from "@/styles/colors";
+import { router } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import DynamicText from "../DynamicText";
@@ -8,6 +9,7 @@ type NavBarProps = {
   onPrev: () => void;
   sections: number;
   currentIndex: number;
+  id: string;
 };
 
 export default function NavBar({
@@ -15,6 +17,7 @@ export default function NavBar({
   onNext,
   sections,
   currentIndex,
+  id,
 }: NavBarProps) {
   return (
     <View style={styles.layout}>
@@ -44,7 +47,7 @@ export default function NavBar({
         <Pressable
           disabled={currentIndex !== sections - 1}
           onPress={() => {
-            console.log("quiz");
+            router.push(`/module/${id}/quiz`);
           }}
         >
           <DynamicText
@@ -114,3 +117,4 @@ const styles = StyleSheet.create({
 
 // might reuse pressable card onpress method for navigating between sections
 // add debouncer
+// TODO : route to quiz page

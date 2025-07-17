@@ -51,5 +51,5 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO : pagination, appbar, quiz page
+// TODO : quiz page
 // TODO(after) : TTS, voice command

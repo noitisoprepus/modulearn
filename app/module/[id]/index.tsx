@@ -13,6 +13,8 @@ export default function Module() {
 
   const moduleData = modules.find((module) => module.id === id);
 
+  const moduleTitle: string = moduleData?.title || "Title not loaded";
+
   if (!moduleData) return null;
 
   // TODO: Implement a handler/provider (not sure what to call it) that will track, feed, and navigate through each topic from moduleData.data as a page into this screen
@@ -34,7 +36,7 @@ export default function Module() {
 
   return (
     <>
-      <ScreenWrapper scrollable showAppBar appBarTitle={moduleData.title}>
+      <ScreenWrapper scrollable showAppBar appBarTitle={moduleTitle}>
         <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
           <Section
             sectionTitle={currentTopic.title}
@@ -50,6 +52,7 @@ export default function Module() {
         onPrev={handlePrev}
         currentIndex={currentIndex}
         sections={moduleTopics.length}
+        id={id}
       />
     </>
   );
