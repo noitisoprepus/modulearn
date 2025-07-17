@@ -10,7 +10,7 @@ export default function AppBar({ title }: AppBarProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>{title}</Text>
-      <TextToSpeechButton />
+      <TextToSpeechButton text="Hello there. Welcome to ModuLearn! This is a speech test. I am speaking so many words." />
     </View>
   );
 }

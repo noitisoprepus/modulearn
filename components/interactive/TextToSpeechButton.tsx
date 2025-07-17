@@ -1,18 +1,46 @@
 import { colors } from "@/styles/colors";
+import { splitTextIntoChunks } from "@/utils/speechUtils";
 import * as Speech from "expo-speech";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IconButton from "./IconButton";
 
-export default function TextToSpeechButton() {
+type TextToSpeechButtonProps = {
+	text: string;
+};
+
+export default function TextToSpeechButton({ text }: TextToSpeechButtonProps) {
 	const [isSpeaking, setIsSpeaking] = useState(false);
+	const chunksRef = useRef<string[]>([]);
+  const indexRef = useRef<number>(0);
 	
+	// Re-split text when `text` prop changes
+  useEffect(() => {
+    chunksRef.current = splitTextIntoChunks(text, 10);
+		indexRef.current = 0;
+  }, [text]);
+	
+	const speakNext = async () => {
+		const chunks = chunksRef.current;
+    const index = indexRef.current;
+
+		if (index >= chunks.length) {
+			// Reset speech
+			setIsSpeaking(false);
+			indexRef.current = 0;
+			return;
+		}
+
+		Speech.speak(chunks[index], {
+			onDone: () => {
+				indexRef.current++;
+				speakNext();
+			},
+			onStopped: () => setIsSpeaking(false)
+		});
+	};
+
 	const toggleTTS = async () => {
     const speaking = await Speech.isSpeakingAsync();
-		const thingsToSay = "Hello there. Welcome to ModuLearn!"
-
-		// TODO: Implement a handler for dividing module text content 
-		// into chunks (that meets Speech.maxSpeechInputLength) and 
-		// serve each chunk ito the TTS module. 
 
 		// expo-speech currently does not support pause/resume for Android.
 		// We'll only do play/stop, for now.
@@ -20,20 +48,19 @@ export default function TextToSpeechButton() {
       Speech.stop();
       setIsSpeaking(false);
     } else {
-      Speech.speak(thingsToSay, {
-        onDone: () => setIsSpeaking(false),
-        onStopped: () => setIsSpeaking(false),
-      });
+			if (!text.trim()) return;
+
       setIsSpeaking(true);
+      speakNext();
     }
   };
 
 	return (
-			<IconButton 
-				icon={isSpeaking ? "stop" : "play-arrow"}
-				iconColor={colors.surface}
-				backgroundColor={colors.secondary} 
-				onPress={toggleTTS} 
-			/>
+		<IconButton 
+			icon={isSpeaking ? "stop" : "play-arrow"}
+			iconColor={colors.surface}
+			backgroundColor={colors.secondary} 
+			onPress={toggleTTS} 
+		/>
 	);
 }
