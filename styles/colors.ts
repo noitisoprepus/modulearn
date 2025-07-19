@@ -21,9 +21,10 @@ export const colors = {
   // Text and contrast
   lightText: "#FFFFFF",
   darkText: "#333333",
+  disabledText: "#b8b8b8ff",
 
   correct: "#02A62E",
-  disabled: "#616161",
+  disabled: "#636363ff",
 
   error: "#FF5725",
   warning: "#FFAC50",
