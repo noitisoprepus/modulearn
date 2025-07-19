@@ -36,7 +36,7 @@ export default function Module() {
 
   return (
     <>
-      <ScreenWrapper scrollable showAppBar appBarTitle={moduleTitle}>
+      <ScreenWrapper showAppBar appBarTitle={moduleTitle}>
         <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
           <Section
             sectionTitle={currentTopic.title}
@@ -57,5 +57,3 @@ export default function Module() {
     </>
   );
 }
-
-// navbar updates index if ++ or --

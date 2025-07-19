@@ -3,6 +3,7 @@ import ChoiceCard from "@/components/interactive/ChoiceCard";
 import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
+import { useAnswers } from "@/context/ContextProvider";
 import { modules } from "@/data/modulesContentMap";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -10,17 +11,15 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 export default function Quiz() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { answers, setAnswers } = useAnswers();
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const moduleData = modules.find((module) => module.id === id);
-  const moduleAssessment = moduleData?.data["assessment"];
-  const totalQuestions = moduleAssessment.length;
-  const moduleTitle = moduleData?.title || "No title loaded";
 
-  const [answers, setAnswers] = useState<(string | null)[]>(
-    Array(totalQuestions).fill(null)
-  );
+  if (!moduleData) return null;
 
-  if (!moduleAssessment) return null;
+  const moduleAssessment = moduleData.data["assessment"];
+  const moduleTitle = moduleData.title || "No title loaded";
 
   const currentQuestion = moduleAssessment[currentIndex];
   const question = currentQuestion["question"];

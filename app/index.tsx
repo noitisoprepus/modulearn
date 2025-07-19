@@ -9,7 +9,7 @@ export default function Index() {
   const title = "Science, Technology, and Society";
 
   return (
-    <ScreenWrapper scrollable showAppBar appBarTitle={title}>
+    <ScreenWrapper showAppBar appBarTitle={title}>
       <View style={styles.layout}>
         {modules.map((module, index) => {
           const image =
@@ -51,5 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO : quiz page
 // TODO(after) : TTS, voice command
