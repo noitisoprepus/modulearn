@@ -2,8 +2,8 @@ import AnswerCard from "@/components/AnswerCard";
 import DynamicText from "@/components/DynamicText";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
-import { useAnswers } from "@/context/ContextProvider";
 import { modules } from "@/data/modulesContentMap";
+import { useQuizState } from "@/state/quizState";
 import { colors } from "@/styles/colors";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -15,10 +15,11 @@ type AssessmentItem = {
 
 export default function Results() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { clearAnswer, answers } = useAnswers();
   const moduleData = modules.find((module) => module.id === id);
 
   if (!moduleData) return null;
+
+  const { answers, clearAnswers } = useQuizState();
 
   const moduleTitle = moduleData.title || "No title loaded";
   const moduleAssessment = moduleData.data["assessment"];
@@ -34,7 +35,7 @@ export default function Results() {
   const correctItems = isCorrect.filter(Boolean).length;
 
   const handleClear = () => {
-    clearAnswer();
+    clearAnswers();
   };
 
   return (

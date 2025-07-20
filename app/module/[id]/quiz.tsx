@@ -3,15 +3,15 @@ import ChoiceCard from "@/components/interactive/ChoiceCard";
 import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
-import { useAnswers } from "@/context/ContextProvider";
 import { modules } from "@/data/modulesContentMap";
+import { useQuizState } from "@/state/quizState";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 export default function Quiz() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { answers, setAnswers } = useAnswers();
+  const { answers, setAnswers } = useQuizState();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const moduleData = modules.find((module) => module.id === id);
@@ -26,11 +26,9 @@ export default function Quiz() {
   const choices: Record<string, string> = currentQuestion["choices"];
 
   const nextQuestion = (choice: string) => {
-    setAnswers((prev) => {
-      const updated = [...prev];
-      updated[currentIndex] = choice;
-      return updated;
-    });
+    const updated = [...answers];
+    updated[currentIndex] = choice;
+    setAnswers(updated);
 
     if (currentIndex !== moduleAssessment.length - 1) {
       setTimeout(() => {
@@ -39,7 +37,6 @@ export default function Quiz() {
     } else {
       router.push(`/module/${id}/results`);
     }
-    // else route results page
 
     // TODO : add sound ?
   };
