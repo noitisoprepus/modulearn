@@ -36,7 +36,8 @@
         }
       ],
       "expo-font",
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

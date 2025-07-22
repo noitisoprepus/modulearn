@@ -6,11 +6,16 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
 import { useQuizState } from "@/state/quizState";
+import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
+const sfxSource = require("@/assets/sfx/click.wav");
+
 export default function Quiz() {
+  const player = useAudioPlayer(sfxSource);
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const { answers, setAnswers } = useQuizState();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,6 +49,8 @@ export default function Quiz() {
       }, 300);
     }
 
+    player.seekTo(0);
+    player.play();
     // TODO : add sound ?
   };
 
