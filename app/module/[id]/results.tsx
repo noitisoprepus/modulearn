@@ -15,11 +15,10 @@ type AssessmentItem = {
 
 export default function Results() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { answers, clearAnswers } = useQuizState();
   const moduleData = modules.find((module) => module.id === id);
 
   if (!moduleData) return null;
-
-  const { answers, clearAnswers } = useQuizState();
 
   const moduleTitle = moduleData.title || "No title loaded";
   const moduleAssessment = moduleData.data["assessment"];
