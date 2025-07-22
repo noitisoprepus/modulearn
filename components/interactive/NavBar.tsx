@@ -4,23 +4,62 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import DynamicText from "../DynamicText";
 
+type ButtonVariant = "full" | "single";
+
 type NavBarProps = {
-  onNext: () => void;
-  onPrev: () => void;
-  sections: number;
-  currentIndex: number;
-  id: string;
+  onNext?: () => void;
+  onPrev?: () => void;
+  pages?: number;
+  currentIndex?: number;
+  id?: string;
+  quiz?: boolean;
+  variant?: ButtonVariant;
+  hasAnswered?: boolean;
 };
 
-export default function NavBar({
+export default function NavBar(props: NavBarProps) {
+  const { variant = "full" } = props;
+
+  switch (variant) {
+    case "full":
+      return <FullNavBar {...props} />;
+    case "single":
+      return <SingleNavBar {...props} />;
+  }
+}
+
+function SingleNavBar({ onPrev }: NavBarProps) {
+  return (
+    <Pressable onPress={onPrev}>
+      <View style={styles.single}>
+        <View style={styles.items}>
+          <DynamicText
+            style={{
+              color: colors.lightText,
+              fontWeight: "bold",
+            }}
+          >
+            Return to Module
+          </DynamicText>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function FullNavBar({
   onPrev,
   onNext,
-  sections,
-  currentIndex,
-  id,
+  pages = 0,
+  currentIndex = 0,
+  id = "",
+  quiz = false,
+  hasAnswered = false,
 }: NavBarProps) {
+  const isLastQuestion = currentIndex === pages - 1;
+
   return (
-    <View style={styles.layout}>
+    <View style={styles.full}>
       <View style={styles.items}>
         <Pressable onPress={onPrev} disabled={currentIndex < 0}>
           <DynamicText
@@ -33,7 +72,7 @@ export default function NavBar({
                   }
             }
           >
-            Prev Page
+            Back
           </DynamicText>
         </Pressable>
         <DynamicText
@@ -44,28 +83,46 @@ export default function NavBar({
         >
           |
         </DynamicText>
-        <Pressable
-          disabled={currentIndex !== sections - 1}
-          onPress={() => {
-            router.push(`/module/${id}/quiz`);
-          }}
-        >
-          <DynamicText
-            style={
-              currentIndex === sections - 1
-                ? {
-                    color: colors.lightText,
-                    fontWeight: "bold",
-                  }
-                : {
-                    color: colors.disabledText,
-                    fontWeight: "bold",
-                  }
-            }
+        {!quiz ? (
+          <Pressable
+            disabled={!isLastQuestion}
+            onPress={() => {
+              router.push(`/module/${id}/quiz`);
+            }}
           >
-            Quiz
-          </DynamicText>
-        </Pressable>
+            <DynamicText
+              style={
+                isLastQuestion
+                  ? {
+                      color: colors.lightText,
+                      fontWeight: "bold",
+                    }
+                  : {
+                      color: colors.disabledText,
+                      fontWeight: "bold",
+                    }
+              }
+            >
+              Take the Quiz
+            </DynamicText>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() => {
+              router.back();
+            }}
+          >
+            <DynamicText
+              style={{
+                color: colors.lightText,
+                fontWeight: "bold",
+              }}
+            >
+              Return to Module
+            </DynamicText>
+          </Pressable>
+        )}
+
         <DynamicText
           style={{
             color: colors.lightText,
@@ -77,15 +134,18 @@ export default function NavBar({
         <Pressable onPress={onNext}>
           <DynamicText
             style={
-              currentIndex === sections - 1
-                ? { color: colors.disabledText, fontWeight: "bold" }
-                : {
+              hasAnswered || !isLastQuestion
+                ? {
                     color: colors.lightText,
+                    fontWeight: "bold",
+                  }
+                : {
+                    color: colors.disabledText,
                     fontWeight: "bold",
                   }
             }
           >
-            Next Page
+            {quiz && isLastQuestion ? "Submit" : "Next"}
           </DynamicText>
         </Pressable>
       </View>
@@ -94,11 +154,20 @@ export default function NavBar({
 }
 
 const styles = StyleSheet.create({
-  layout: {
+  full: {
     position: "absolute",
-    bottom: "5%",
-    left: "50%",
-    transform: [{ translateX: -160 }],
+    alignSelf: "center",
+    bottom: 50,
+    width: 320,
+    height: 45,
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  single: {
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 50,
     width: 320,
     height: 45,
     backgroundColor: colors.primary,
@@ -114,7 +183,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 });
-
-// might reuse pressable card onpress method for navigating between sections
-// add debouncer
-// TODO : route to quiz page

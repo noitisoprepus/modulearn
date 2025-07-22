@@ -51,7 +51,7 @@ export default function Module() {
         onNext={handleNext}
         onPrev={handlePrev}
         currentIndex={currentIndex}
-        sections={moduleTopics.length}
+        pages={moduleTopics.length}
         id={id}
       />
     </>

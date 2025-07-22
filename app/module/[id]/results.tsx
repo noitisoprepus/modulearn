@@ -1,11 +1,12 @@
 import AnswerCard from "@/components/AnswerCard";
 import DynamicText from "@/components/DynamicText";
+import NavBar from "@/components/interactive/NavBar";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
 import { useQuizState } from "@/state/quizState";
 import { colors } from "@/styles/colors";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -33,36 +34,43 @@ export default function Results() {
   const assessmentItems = moduleAssessment.length;
   const correctItems = isCorrect.filter(Boolean).length;
 
-  const handleClear = () => {
-    clearAnswers();
+  const handlePrev = () => {
+    router.dismissAll();
+    router.replace(`/`);
+    setTimeout(() => {
+      clearAnswers();
+    }, 300);
   };
 
   return (
-    <ScreenWrapper showAppBar appBarTitle={moduleTitle}>
-      <View style={styles.layout}>
-        <View style={styles.header}>
-          <DynamicText variant="header">Results</DynamicText>
-          <DynamicText variant="header" style={styles.score}>
-            {correctItems} / {assessmentItems}
-          </DynamicText>
+    <>
+      <ScreenWrapper showAppBar appBarTitle={moduleTitle}>
+        <View style={styles.layout}>
+          <View style={styles.header}>
+            <DynamicText variant="header">Results</DynamicText>
+            <DynamicText variant="header" style={styles.score}>
+              {correctItems} / {assessmentItems}
+            </DynamicText>
+          </View>
+          <Spacer size={40} />
+          <View style={styles.cards}>
+            {moduleAssessment.map(
+              ({ question }: AssessmentItem, index: number) => (
+                <AnswerCard
+                  key={index}
+                  question={question}
+                  userAnswer={answers[index]}
+                  questionNumber={index}
+                  isCorrect={isCorrect[index] === true}
+                  choices={moduleAssessment[index].choices}
+                />
+              )
+            )}
+          </View>
         </View>
-        <Spacer size={40} />
-        <View style={styles.cards}>
-          {moduleAssessment.map(
-            ({ question }: AssessmentItem, index: number) => (
-              <AnswerCard
-                key={index}
-                question={question}
-                userAnswer={answers[index]}
-                questionNumber={index}
-                isCorrect={isCorrect[index] === true}
-                choices={moduleAssessment[index].choices}
-              />
-            )
-          )}
-        </View>
-      </View>
-    </ScreenWrapper>
+      </ScreenWrapper>
+      <NavBar variant="single" onPrev={handlePrev} />
+    </>
   );
 }
 

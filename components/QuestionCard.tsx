@@ -1,37 +1,60 @@
-import { colors } from "@/styles/colors";
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react";
+import { Image, StyleSheet, View } from "react-native";
 import DynamicText from "./DynamicText";
 
 type QuestionCardProps = {
   index: number;
   question: string;
+  img?: string;
+  questions: number;
 };
 
-export default function QuestionCard({ question, index }: QuestionCardProps) {
-  const [image, setImage] = useState(Boolean);
-
+export default function QuestionCard({
+  question,
+  index,
+  img,
+  questions,
+}: QuestionCardProps) {
   return (
     <View style={styles.layout}>
-      <DynamicText style={[styles.text, { fontWeight: "bold" }]}>
-        Question {index} of 10
+      <DynamicText style={[styles.text, styles.tracker]}>
+        Question {index} of {questions}
       </DynamicText>
-      <DynamicText style={styles.text}>{question}</DynamicText>
+      <DynamicText style={[styles.text, styles.question]}>
+        {question}
+      </DynamicText>
+      {img && (
+        <Image
+          source={require("@/assets/images/raccoon.webp")}
+          style={styles.image}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   layout: {
-    height: 150,
+    height: "auto",
     width: 350,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: colors.cardDefault,
+    // backgroundColor: "red",
+    gap: 20,
+    alignItems: "center",
   },
   text: {
     margin: "auto",
     textAlign: "center",
+  },
+  tracker: {
+    // fontSize: 10,
+    fontWeight: "bold",
+  },
+  question: {
+    fontSize: 20,
+  },
+  image: {
+    width: 300,
+    height: 250,
+    objectFit: "cover",
   },
 });
