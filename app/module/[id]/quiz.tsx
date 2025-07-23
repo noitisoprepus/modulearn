@@ -1,15 +1,21 @@
 import DynamicText from "@/components/DynamicText";
 import ChoiceCard from "@/components/interactive/ChoiceCard";
+import NavBar from "@/components/interactive/NavBar";
 import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
 import { useQuizState } from "@/state/quizState";
+import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
+const sfxSource = require("@/assets/sfx/click.wav");
+
 export default function Quiz() {
+  const player = useAudioPlayer(sfxSource);
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const { answers, setAnswers } = useQuizState();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,8 +30,15 @@ export default function Quiz() {
   const currentQuestion = moduleAssessment[currentIndex];
   const question = currentQuestion["question"];
   const choices: Record<string, string> = currentQuestion["choices"];
+  const questionImage = currentQuestion["imgSrc"];
+  const numberOfQuestions = moduleAssessment.length;
+  const filteredAnswer = answers.filter((i) => {
+    return i;
+  });
 
-  const nextQuestion = (choice: string) => {
+  const hasAnsweredAll = filteredAnswer.length === numberOfQuestions;
+
+  const handleAnswer = (choice: string) => {
     const updated = [...answers];
     updated[currentIndex] = choice;
     setAnswers(updated);
@@ -34,11 +47,25 @@ export default function Quiz() {
       setTimeout(() => {
         setCurrentIndex(currentIndex + 1);
       }, 300);
-    } else {
-      router.push(`/module/${id}/results`);
     }
 
+    player.seekTo(0);
+    player.play();
     // TODO : add sound ?
+  };
+
+  const handleNext = () => {
+    if (currentIndex < moduleAssessment.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else if (hasAnsweredAll) {
+      router.push(`/module/${id}/results`);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
   };
 
   return (
@@ -49,12 +76,17 @@ export default function Quiz() {
             <DynamicText variant="header" style={styles.text}>
               Assessment
             </DynamicText>
-            <QuestionCard index={currentIndex + 1} question={question} />
+            <QuestionCard
+              index={currentIndex + 1}
+              question={question}
+              img={questionImage}
+              questions={numberOfQuestions}
+            />
           </View>
-          <Spacer size={40} />
+          <Spacer size={20} />
           {Object.entries(choices).map(
             ([choice, value]: [string, string], index) => (
-              <Pressable key={index} onPress={() => nextQuestion(choice)}>
+              <Pressable key={index} onPress={() => handleAnswer(choice)}>
                 <ChoiceCard
                   choice={choice}
                   value={value}
@@ -64,7 +96,16 @@ export default function Quiz() {
             )
           )}
         </View>
+        <Spacer size={100} />
       </ScreenWrapper>
+      <NavBar
+        quiz
+        onNext={handleNext}
+        onPrev={handlePrev}
+        currentIndex={currentIndex}
+        pages={moduleAssessment.length}
+        hasAnswered={hasAnsweredAll}
+      />
     </>
   );
 }
