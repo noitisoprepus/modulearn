@@ -1,9 +1,10 @@
+import { useSpeechStore } from "@/store/speechStore";
 import * as Speech from "expo-speech";
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 type CommandHandler = (recognizedCommand: string) => void;
 
@@ -14,7 +15,7 @@ type UseVoiceCommandsOptions = {
 };
 
 export function useVoiceCommands({ commands, onCommand, promptMessage }: UseVoiceCommandsOptions) {
-  const [isRecognizing, setIsRecognizing] = useState(false);
+  const { setIsRecognizing } = useSpeechStore();
   const isMounted = useRef(true);
 
   const speakPromptAndListen = useCallback(() => {
