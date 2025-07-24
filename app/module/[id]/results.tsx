@@ -4,7 +4,7 @@ import NavBar from "@/components/interactive/NavBar";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
-import { useQuizState } from "@/state/quizState";
+import { useQuizStore } from "@/store/quizStore";
 import { colors } from "@/styles/colors";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -16,7 +16,7 @@ type AssessmentItem = {
 
 export default function Results() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { answers, clearAnswers } = useQuizState();
+  const { answers, clearAnswers } = useQuizStore();
   const moduleData = modules.find((module) => module.id === id);
 
   if (!moduleData) return null;

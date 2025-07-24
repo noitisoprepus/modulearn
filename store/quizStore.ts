@@ -6,7 +6,7 @@ type QuizState = {
   clearAnswers: () => void;
 };
 
-export const useQuizState = create<QuizState>((set) => ({
+export const useQuizStore = create<QuizState>((set) => ({
   answers: [],
   setAnswers: (answers) => set({ answers }),
   clearAnswers: () => set({ answers: [] }),

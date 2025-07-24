@@ -5,7 +5,7 @@ import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
-import { useQuizState } from "@/state/quizState";
+import { useQuizStore } from "@/store/quizStore";
 import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -17,7 +17,7 @@ export default function Quiz() {
   const player = useAudioPlayer(sfxSource);
 
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { answers, setAnswers } = useQuizState();
+  const { answers, setAnswers } = useQuizStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const moduleData = modules.find((module) => module.id === id);
@@ -51,7 +51,6 @@ export default function Quiz() {
 
     player.seekTo(0);
     player.play();
-    // TODO : add sound ?
   };
 
   const handleNext = () => {
