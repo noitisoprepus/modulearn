@@ -5,7 +5,7 @@ type ModuleState = {
 	setModuleIndex: (index: number) => void;
 };
 
-export const useModeulStore = create<ModuleState>((set) => ({
+export const useModuleStore = create<ModuleState>((set) => ({
 	moduleIndex: null,
 	setModuleIndex: (index) => set({ moduleIndex: index }),
 }));
