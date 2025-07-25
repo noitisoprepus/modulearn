@@ -4,9 +4,10 @@ import NavBar from "@/components/interactive/NavBar";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
+import { useModuleStore } from "@/store/moduleStore";
 import { useQuizStore } from "@/store/quizStore";
 import { colors } from "@/styles/colors";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -15,9 +16,12 @@ type AssessmentItem = {
 };
 
 export default function Results() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { moduleIndex } = useModuleStore();
   const { answers, clearAnswers } = useQuizStore();
-  const moduleData = modules.find((module) => module.id === id);
+  
+  if (moduleIndex === null) return null;
+
+  const moduleData = modules[moduleIndex];
 
   if (!moduleData) return null;
 

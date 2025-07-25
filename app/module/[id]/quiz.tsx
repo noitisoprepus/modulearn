@@ -5,9 +5,10 @@ import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
+import { useModuleStore } from "@/store/moduleStore";
 import { useQuizStore } from "@/store/quizStore";
 import { useAudioPlayer } from "expo-audio";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
@@ -16,11 +17,13 @@ const sfxSource = require("@/assets/sfx/click.wav");
 export default function Quiz() {
   const player = useAudioPlayer(sfxSource);
 
-  const { id } = useLocalSearchParams<{ id: string }>();
   const { answers, setAnswers } = useQuizStore();
+  const { moduleIndex } = useModuleStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const moduleData = modules.find((module) => module.id === id);
+  if (moduleIndex === null) return null;
+
+  const moduleData = modules[moduleIndex];
 
   if (!moduleData) return null;
 
@@ -57,7 +60,7 @@ export default function Quiz() {
     if (currentIndex < moduleAssessment.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else if (hasAnsweredAll) {
-      router.push(`/module/${id}/results`);
+      router.push(`/module/[id]/results`);
     }
   };
 
