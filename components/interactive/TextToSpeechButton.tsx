@@ -1,7 +1,8 @@
+import { useSpeechStore } from "@/store/speechStore";
 import { colors } from "@/styles/colors";
 import { splitTextIntoChunks } from "@/utils/speechUtils";
 import * as Speech from "expo-speech";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import IconButton from "./IconButton";
 
 type TextToSpeechButtonProps = {
@@ -9,13 +10,13 @@ type TextToSpeechButtonProps = {
 };
 
 export default function TextToSpeechButton({ text }: TextToSpeechButtonProps) {
-	const [isSpeaking, setIsSpeaking] = useState(false);
+	const { isSpeaking, setIsSpeaking } = useSpeechStore();
 	const chunksRef = useRef<string[]>([]);
   const indexRef = useRef<number>(0);
 	
 	// Re-split text when `text` prop changes
   useEffect(() => {
-    chunksRef.current = splitTextIntoChunks(text, 10);
+    chunksRef.current = splitTextIntoChunks(text, Speech.maxSpeechInputLength - 100);
 		indexRef.current = 0;
   }, [text]);
 	
