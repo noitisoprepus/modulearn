@@ -1,4 +1,5 @@
 import { useSpeechStore } from "@/store/speechStore";
+import { splitTextIntoChunks } from "@/utils/speechUtils";
 import * as Speech from "expo-speech";
 import {
   ExpoSpeechRecognitionModule,
@@ -15,18 +16,41 @@ type UseVoiceCommandsOptions = {
 };
 
 export function useVoiceCommands({ commands, onCommand, promptMessage }: UseVoiceCommandsOptions) {
-  const { setIsRecognizing } = useSpeechStore();
+  const { setIsSpeaking, setIsRecognizing } = useSpeechStore();
   const isMounted = useRef(true);
+  // TTS refs
+  const chunksRef = useRef<string[]>([]);
+  const indexRef = useRef<number>(0);
 
-  const speakPromptAndListen = useCallback(() => {
-    if (!promptMessage) return startRecognition();
+  const speakNext = useCallback(() => {
+    const chunks = chunksRef.current;
+    const index = indexRef.current;
 
-    Speech.speak(promptMessage, {
+    if (index >= chunks.length) {
+      // Reset speech
+      setIsSpeaking(false);
+      indexRef.current = 0;
+
+      // Start voice recognition
+      if (isMounted.current) startRecognition();
+
+      return;
+    }
+
+    Speech.speak(chunks[index], {
       onDone: () => {
-        if (isMounted.current) startRecognition();
-      },
+        indexRef.current++;
+        speakNext();
+      }
     });
-  }, [promptMessage]);
+  }, [setIsSpeaking]);
+  
+  const speakPromptAndListen = useCallback(() => {
+    const fullPrompt = `${promptMessage} To repeat the instructions, please say "repeat".`;
+    chunksRef.current = splitTextIntoChunks(fullPrompt, Speech.maxSpeechInputLength - 100);
+    indexRef.current = 0;
+    speakNext();
+  }, [promptMessage, speakNext]);
 
   const startRecognition = async () => {
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
