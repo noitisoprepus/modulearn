@@ -11,7 +11,6 @@ type NavBarProps = {
   onPrev?: () => void;
   pages?: number;
   currentIndex?: number;
-  id?: string;
   quiz?: boolean;
   variant?: ButtonVariant;
   hasAnswered?: boolean;
@@ -52,7 +51,6 @@ function FullNavBar({
   onNext,
   pages = 0,
   currentIndex = 0,
-  id = "",
   quiz = false,
   hasAnswered = false,
 }: NavBarProps) {
@@ -87,7 +85,7 @@ function FullNavBar({
           <Pressable
             disabled={!isLastQuestion}
             onPress={() => {
-              router.push(`/module/${id}/quiz`);
+              router.push(`/module/[id]/quiz`);
             }}
           >
             <DynamicText
