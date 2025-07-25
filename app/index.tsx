@@ -2,11 +2,45 @@ import PressableCard from "@/components/interactive/PressableCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { media, modules } from "@/data/modulesContentMap";
+import { useVoiceCommands } from "@/hooks/useVoiceCommands";
+import { useModuleStore } from "@/store/moduleStore";
+import { numberWordsMap } from "@/utils/speechUtils";
 import { router } from "expo-router";
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function Index() {
+  const { setModuleIndex } = useModuleStore();
+
+  // TODO: Get title from module bundle
   const title = "Science, Technology, and Society";
+
+  const { promptMessage, moduleCommands } = useMemo(() => {
+    let prompt = "Welcome to ModuLearn. Say the number of the module you want to open.";
+    const commands: string[] = [];
+
+    modules.forEach((mod, i) => {
+      const indexString = (i + 1).toString();
+      const word = Object.keys(numberWordsMap).find(key => numberWordsMap[key] === indexString);
+      
+      if (word) {
+        prompt += ` Module ${indexString}: ${mod.title}.`;
+        commands.push(word);
+      }
+    });
+
+    return { promptMessage: prompt, moduleCommands: commands };
+  }, []);
+
+  useVoiceCommands({
+    commands: moduleCommands,
+    onCommand: (command) => {
+      const index = parseInt(numberWordsMap[command]) - 1;
+      setModuleIndex(index);
+      router.navigate("/module/[id]")
+    },
+    promptMessage: promptMessage,
+  });
 
   return (
     <ScreenWrapper showAppBar appBarTitle={title}>
@@ -22,12 +56,10 @@ export default function Index() {
               imgSource={image}
               module={`Module ${index + 1}`}
               title={module.title}
-              onPress={() =>
-                router.navigate({
-                  pathname: "/module/[id]",
-                  params: { id: module.id },
-                })
-              }
+              onPress={() => {
+                setModuleIndex(index);
+                router.navigate("/module/[id]");
+              }}
             />
           );
         })}
@@ -36,8 +68,6 @@ export default function Index() {
     </ScreenWrapper>
   );
 }
-
-// const windowWidth =
 
 const styles = StyleSheet.create({
   layout: {
@@ -50,5 +80,3 @@ const styles = StyleSheet.create({
     rowGap: 20,
   },
 });
-
-// TODO(after) : TTS, voice command
