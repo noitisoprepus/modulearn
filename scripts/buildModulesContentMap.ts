@@ -49,6 +49,7 @@ if (!zipFilePath || path.extname(zipFilePath) !== ".zip") {
   console.error("Please provide a path to the zip file as the first argument.");
   process.exit(1);
 }
+const zipFileName = path.basename(zipFilePath, path.extname(zipFilePath));
 
 (async () => {
   // Clean existing modules content
@@ -156,6 +157,8 @@ ${importJsonLines.join("\n")}
 
 ${importImageLines.join("\n")}
 
+export const title = "${zipFileName}";
+
 export const modules = [
   ${moduleObjects.join(",\n  ")}
 ];
@@ -173,5 +176,3 @@ export const media: { [key: string]: ImageSourcePropType } = {
     `Successfully generated modules content map in './data/modulesContentMap.ts'`
   );
 })();
-
-// !FIX : check if data folder exist.
