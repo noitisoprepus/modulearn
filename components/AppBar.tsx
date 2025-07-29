@@ -1,6 +1,5 @@
 import { colors } from "@/styles/colors";
 import { StyleSheet, Text, View } from "react-native";
-import TextToSpeechButton from "./interactive/TextToSpeechButton";
 
 type AppBarProps = {
   title?: string;
@@ -10,7 +9,6 @@ export default function AppBar({ title }: AppBarProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>{title}</Text>
-      <TextToSpeechButton text="Hello there. Welcome to ModuLearn! This is a speech test. I am speaking so many words." />
     </View>
   );
 }
