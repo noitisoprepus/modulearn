@@ -1,23 +1,40 @@
-export function splitTextIntoChunks(text: string, maxChunkSize = 2048): string[] {
-  // Split the given text into sentences
-  const sentences = text.match(/[^.!?]+[.!?]+[\])'"`’”]*|\s*$/g) || [text];
-  const chunks: string[] = [];
-  let currentChunk = "";
+import * as Speech from "expo-speech";
+import { splitTextIntoChunks } from "./textUtils";
 
-  // Get chunks from each sentence
-  for (let sentence of sentences) {
-    if ((currentChunk + sentence).length <= maxChunkSize) {
-      currentChunk += sentence;
-    } else {
-      chunks.push(currentChunk.trim());
-      currentChunk = sentence;
+type SpeakChunksOptions = {
+  text: string;
+  onComplete?: () => void;
+  onStopped?: () => void;
+  chunkSize?: number;
+};
+
+export function speakChunks({
+  text,
+  onComplete,
+  onStopped,
+  chunkSize = Speech.maxSpeechInputLength - 100,
+}: SpeakChunksOptions) {
+  const chunks = splitTextIntoChunks(text, chunkSize);
+  let index = 0;
+
+  const speakNext = () => {
+    if (index >= chunks.length) {
+      onComplete?.();
+      return;
     }
-  }
 
-  // Push any leftover text
-  if (currentChunk) chunks.push(currentChunk.trim());
+    Speech.speak(chunks[index], {
+      onDone: () => {
+        index++;
+        speakNext();
+      },
+      onStopped: () => {
+        onStopped?.();
+      },
+    });
+  };
 
-  return chunks;
+  speakNext();
 }
 
 export const numberWordsMap: Record<string, string> = {
