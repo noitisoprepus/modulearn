@@ -1,58 +1,19 @@
 import { useSpeechStore } from "@/store/speechStore";
-import { splitTextIntoChunks } from "@/utils/speechUtils";
+import { speakChunks } from "@/utils/speechUtils";
+import { useFocusEffect } from "@react-navigation/native";
 import * as Speech from "expo-speech";
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from "expo-speech-recognition";
-import { useCallback, useEffect, useRef } from "react";
+import { ExpoSpeechRecognitionModule } from "expo-speech-recognition";
+import { useCallback, useRef } from "react";
 
-type CommandHandler = (recognizedCommand: string) => void;
-
-type UseVoiceCommandsOptions = {
-  commands: string[];
-  onCommand: CommandHandler;
-  promptMessage: string;
-};
-
-export function useVoiceCommands({ commands, onCommand, promptMessage }: UseVoiceCommandsOptions) {
-  const { setIsSpeaking, setIsRecognizing } = useSpeechStore();
+export function useVoiceCommands() {
+  const { shouldRecognize } = useSpeechStore();
   const isMounted = useRef(true);
-  // TTS refs
-  const chunksRef = useRef<string[]>([]);
-  const indexRef = useRef<number>(0);
-
-  const speakNext = useCallback(() => {
-    const chunks = chunksRef.current;
-    const index = indexRef.current;
-
-    if (index >= chunks.length) {
-      // Reset speech
-      setIsSpeaking(false);
-      indexRef.current = 0;
-
-      // Start voice recognition
-      if (isMounted.current) startRecognition();
-
-      return;
+  
+  const startRecognition = useCallback(async () => {
+    if (useSpeechStore.getState().isRecognizing) {
+      ExpoSpeechRecognitionModule.stop();
     }
 
-    Speech.speak(chunks[index], {
-      onDone: () => {
-        indexRef.current++;
-        speakNext();
-      }
-    });
-  }, [setIsSpeaking]);
-  
-  const speakPromptAndListen = useCallback(() => {
-    const fullPrompt = `${promptMessage} To repeat the instructions, please say "repeat".`;
-    chunksRef.current = splitTextIntoChunks(fullPrompt, Speech.maxSpeechInputLength - 100);
-    indexRef.current = 0;
-    speakNext();
-  }, [promptMessage, speakNext]);
-
-  const startRecognition = async () => {
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
     if (!result.granted) {
       console.warn("Permissions not granted", result);
@@ -61,53 +22,89 @@ export function useVoiceCommands({ commands, onCommand, promptMessage }: UseVoic
 
     ExpoSpeechRecognitionModule.start({
       lang: "en-US",
-      interimResults: true,
+      interimResults: false,
       continuous: false,
       androidIntentOptions: {
         EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS: 3000,
       },
     });
-  };
+  }, []);
 
-  const handleResult = (event: any) => {
-    const transcript = event.results?.[0]?.transcript?.toLowerCase().trim();
-    
-    if (!transcript) return retry();
+  const speakPromptAndListen = useCallback(() => {
+    if (!useSpeechStore.getState().voicePrompt || useSpeechStore.getState().voiceCommands.length === 0 || !useSpeechStore.getState().commandCallback) return;
 
-    const matched = commands.find(command => transcript.includes(command.toLowerCase()));
-    
-    if (matched) {
-      onCommand(matched);
-    } else if (transcript.includes("repeat")) {
-      speakPromptAndListen();
-    } else {
-      retry();
-    }
-  };
+    const fullPrompt = `${useSpeechStore.getState().voicePrompt} To repeat the instructions, please say "repeat".`;
+    useSpeechStore.getState().setIsSpeaking(true);
+    speakChunks({
+      text: fullPrompt,
+      onComplete: () => {
+        useSpeechStore.getState().setIsSpeaking(false);
+        if (isMounted.current) startRecognition();
+      },
+    });
+  }, [startRecognition]);
 
-  const retry = () => {
+  const retry = useCallback(() => {
     Speech.speak("I didn't catch that. Please try again.", {
       onDone: () => {
         if (isMounted.current) startRecognition();
       },
     });
-  };
+  }, [startRecognition]);
 
-  // Event handlers
-  useSpeechRecognitionEvent("start", () => setIsRecognizing(true));
-  useSpeechRecognitionEvent("end", () => setIsRecognizing(false));
-  useSpeechRecognitionEvent("result", handleResult);
-  useSpeechRecognitionEvent("error", (event) => {
-    console.warn("Speech error:", event.message);
-    retry();
-  });
+  const handleResult = useCallback((event: any) => {
+    if (useSpeechStore.getState().isRecognizing) {
+      ExpoSpeechRecognitionModule.stop();
+    }
 
-  useEffect(() => {
-    speakPromptAndListen();
+    const transcript = event.results?.[0]?.transcript?.toLowerCase().trim();
+    if (!transcript) return retry();
+
+    if (transcript.includes("repeat")) {
+      speakPromptAndListen();
+      return;
+    }
+
+    const matched = useSpeechStore.getState().voiceCommands.find(command => transcript.includes(command.toLowerCase()));
+    if (matched) {
+      const callback = useSpeechStore.getState().commandCallback;
+      if (!callback) {
+        console.error("No voice command callback provided.");
+        return;
+      }
+      callback(matched);
+    } else {
+      retry();
+    }
+  }, [retry, speakPromptAndListen]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (shouldRecognize) {
+        speakPromptAndListen();
+        useSpeechStore.getState().setShouldRecognize(false);
+      }
+    }, [shouldRecognize, speakPromptAndListen])
+  );
+
+  useFocusEffect(useCallback(() => {
+    isMounted.current = true;
+
+    const startListener = ExpoSpeechRecognitionModule.addListener("start", () => useSpeechStore.getState().setIsRecognizing(true));
+    const endListener = ExpoSpeechRecognitionModule.addListener("end", () => useSpeechStore.getState().setIsRecognizing(false));
+    const resultListener = ExpoSpeechRecognitionModule.addListener("result", handleResult);
+    const errorListener = ExpoSpeechRecognitionModule.addListener("error", (event) => {
+      console.warn("ExpoSpeechRecognition:", event.message);
+      retry();
+    });
 
     return () => {
       isMounted.current = false;
-      ExpoSpeechRecognitionModule.stop();
+
+      startListener.remove();
+      endListener.remove();
+      resultListener.remove();
+      errorListener.remove();
     };
-  }, [speakPromptAndListen]);
+  }, [handleResult, retry]));
 }
