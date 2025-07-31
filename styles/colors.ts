@@ -13,7 +13,6 @@ export const colors = {
   cardRemember: "#E4DBFF",
   cardTrivia: "#FFFF9D",
   cardCorrect: "#9DFFC6",
-  cardAnswer: "#D32335",
 
   // Shadows
   shadow: "#151515",
@@ -24,6 +23,7 @@ export const colors = {
   disabledText: "#b8b8b8ff",
 
   correct: "#02A62E",
+  incorrect: "#D32335",
   disabled: "#636363ff",
 
   error: "#FF5725",

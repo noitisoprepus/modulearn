@@ -14,7 +14,7 @@ export default function ChoiceCard({ choice, value, active }: ChoiceCardProps) {
     <View
       style={
         active
-          ? [styles.layout, { backgroundColor: colors.cardAnswer }]
+          ? [styles.layout, { backgroundColor: colors.secondary }]
           : styles.layout
       }
     >

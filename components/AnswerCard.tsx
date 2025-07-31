@@ -31,7 +31,12 @@ export default function AnswerCard({
           Question {questionNumber + 1}
         </DynamicText>
         <DynamicText style={styles.question}>{question}</DynamicText>
-        <DynamicText style={styles.text}>
+        <DynamicText style={
+          isCorrect
+            ? styles.text
+            : [styles.text, { color: colors.incorrect }]
+          }
+        >
           {userAnswer.toUpperCase()}. {choices[userAnswer]}
         </DynamicText>
       </View>
