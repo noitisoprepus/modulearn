@@ -46,11 +46,12 @@ export default function Quiz() {
     updated[currentIndex] = choice;
     setAnswers(updated);
 
-    if (currentIndex !== moduleAssessment.length - 1) {
-      setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
-      }, 300);
-    }
+    // // Auto-next
+    // if (currentIndex !== moduleAssessment.length - 1) {
+    //   setTimeout(() => {
+    //     setCurrentIndex(currentIndex + 1);
+    //   }, 300);
+    // }
 
     player.seekTo(0);
     player.play();
