@@ -1,3 +1,4 @@
+import { useAppStore } from "@/store/appStore";
 import { useSpeechStore } from "@/store/speechStore";
 import { speakChunks } from "@/utils/speechUtils";
 import { useFocusEffect } from "@react-navigation/native";
@@ -6,6 +7,7 @@ import { ExpoSpeechRecognitionModule } from "expo-speech-recognition";
 import { useCallback, useRef } from "react";
 
 export function useVoiceCommands() {
+  const { accessibilityEnabled } = useAppStore();
   const { shouldRecognize } = useSpeechStore();
   const isMounted = useRef(true);
   
@@ -45,6 +47,8 @@ export function useVoiceCommands() {
   }, [startRecognition]);
 
   const retry = useCallback(() => {
+    if (!useAppStore.getState().accessibilityEnabled) return;
+    
     Speech.speak("I didn't catch that. Please try again.", {
       onDone: () => {
         if (isMounted.current) startRecognition();
@@ -80,11 +84,11 @@ export function useVoiceCommands() {
 
   useFocusEffect(
     useCallback(() => {
-      if (shouldRecognize) {
-        speakPromptAndListen();
-        useSpeechStore.getState().setShouldRecognize(false);
-      }
-    }, [shouldRecognize, speakPromptAndListen])
+      if (!accessibilityEnabled || !shouldRecognize) return;
+        
+      speakPromptAndListen();
+      useSpeechStore.getState().setShouldRecognize(false);
+    }, [accessibilityEnabled, shouldRecognize, speakPromptAndListen])
   );
 
   useFocusEffect(useCallback(() => {
