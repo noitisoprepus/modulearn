@@ -5,11 +5,14 @@ import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
+import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useModuleStore } from "@/store/moduleStore";
 import { useQuizStore } from "@/store/quizStore";
+import { useSpeechStore } from "@/store/speechStore";
+import { speakChunks } from "@/utils/speechUtils";
 import { useAudioPlayer } from "expo-audio";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 const sfxSource = require("@/assets/sfx/click.wav");
@@ -19,26 +22,26 @@ export default function Quiz() {
 
   const { answers, setAnswers } = useQuizStore();
   const { moduleIndex } = useModuleStore();
+  const {
+      setIsSpeaking,
+      setShouldRecognize,
+      setVoiceCommands,
+      setVoicePrompt,
+      setCommandCallback,
+    } = useSpeechStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (moduleIndex === null) return null;
+  const moduleData = modules[moduleIndex ?? 0] ?? null;
+  const moduleTitle = moduleData?.title ?? "Untitled";
+  const moduleAssessment = moduleData?.data["assessment"] ?? [];
+  const currentQuestion = moduleAssessment[currentIndex] ?? {};
 
-  const moduleData = modules[moduleIndex];
-
-  if (!moduleData) return null;
-
-  const moduleAssessment = moduleData.data["assessment"];
-  const moduleTitle = moduleData.title || "No title loaded";
-
-  const currentQuestion = moduleAssessment[currentIndex];
-  const question = currentQuestion["question"];
-  const choices: Record<string, string> = currentQuestion["choices"];
+  const question = currentQuestion["question"] ?? null;
+  const choices: Record<string, string> = currentQuestion["choices"] ?? null;
   const questionImage = currentQuestion["imgSrc"];
   const numberOfQuestions = moduleAssessment.length;
-  const filteredAnswer = answers.filter((i) => {
-    return i;
-  });
-
+  
+  const filteredAnswer = answers.filter(Boolean);
   const hasAnsweredAll = filteredAnswer.length === numberOfQuestions;
 
   const handleAnswer = (choice: string) => {
@@ -71,6 +74,139 @@ export default function Quiz() {
     }
   };
 
+  const readQuestion = () => {
+    if (!currentQuestion) return;
+
+    // Prepare the question contents transcription
+    const content: string[] = [];
+    content.push(`${question}`);
+
+    // TODO: Add caption to question image
+
+    for (const choice of Object.entries(choices)) {
+      content.push(`${choice[0]}, ${choice[1]}.`);
+    }
+
+    const fullText = content.join(" ");
+    setIsSpeaking(true);
+    speakChunks({
+      text: fullText,
+      onComplete: () => {
+        setIsSpeaking(false);
+
+        const commands = ["question"];
+        const choiceCommands = Object.keys(choices);
+        commands.push(...choiceCommands);
+
+        // Prompt to choose an answer
+        setVoicePrompt(`Say the letter of your selected answer. To repeat the question, say "question".`);
+        setVoiceCommands(commands);
+        setCommandCallback((command: string) => {
+          if (command === "question") {
+            readQuestion();
+          }
+          else {
+            handleAnswer(command);
+            setupQuizCommands(`What do you want to do now?`);
+            setShouldRecognize(true);
+          }
+        });        
+        setShouldRecognize(true);
+      },
+      onStopped: () => setIsSpeaking(false),
+    });
+  };
+
+  const readAnswer = () => {
+    if (!currentQuestion) return;
+
+    // Prepare the answer transcription
+    const updated = [...useQuizStore.getState().answers];
+    const answer = updated[currentIndex];
+
+    const fullText = answer === undefined
+      ? `You have not selected an answer for this question yet.`
+      : `You have selected, ${answer}, ${currentQuestion.choices[answer]}.`;
+    setIsSpeaking(true);
+    speakChunks({
+      text: fullText,
+      onComplete: () => {
+        setIsSpeaking(false);
+
+        // Prompt to choose an answer
+        setupQuizCommands(`What do you want to do now?`);
+        setShouldRecognize(true);
+      },
+      onStopped: () => setIsSpeaking(false),
+    });
+  };
+
+  const handleQuizCommand = (command: string) => {
+      switch (command) {
+        case "question":
+          readQuestion();
+          break;
+        case "answer":
+          readAnswer();
+          break;
+        case "module":
+          router.navigate("/module/[id]");
+          break;
+        case "next":
+          handleNext();
+          break;
+        case "previous":
+          handlePrev();
+          break;
+        case "submit":
+          router.navigate("/module/[id]/results");
+          break;
+        default:
+          break;
+      }
+    };
+
+  const setupQuizCommands = (initialMessage: string = "") => {
+    if (!moduleData) return;
+
+    const isFirstQuestion = currentIndex === 0;
+    const isLastQuestion = currentIndex === numberOfQuestions - 1;
+
+    const commands: string[] = ["question", "answer", "module"];
+    const prompts: string[] = [];
+
+    // Default commands
+    prompts.push(`Say "question" to read the question.`);
+    prompts.push(`Say "answer" to read your answer.`);
+    prompts.push(`Say "module" to go back to the module.`);
+
+    if (!isFirstQuestion) {
+      commands.push("previous");
+      prompts.push(`Say "previous" to go back to the previous question.`);
+    }
+
+    if (!isLastQuestion) {
+      commands.push("next");
+      prompts.push(`Say "next" to go to the next question.`);
+    } else if (isLastQuestion && useQuizStore.getState().answers.filter(Boolean).length === numberOfQuestions) {
+      commands.push("submit");
+      prompts.push(`Say "submit" to submit your answers.`);
+    }
+
+    const fullVoicePrompt = [initialMessage, ...prompts].filter(Boolean).join("\n");
+
+    setVoicePrompt(fullVoicePrompt);
+    setVoiceCommands(commands);
+    setCommandCallback(handleQuizCommand);
+  };
+
+  useEffect(() => {
+    setupQuizCommands(`Question number ${currentIndex + 1}.`);
+    setShouldRecognize(true);
+  }, [currentIndex]);
+  
+  useVoiceCommands();
+
   return (
     <>
       <ScreenWrapper showAppBar appBarTitle={moduleTitle}>
@@ -89,11 +225,11 @@ export default function Quiz() {
           <Spacer size={20} />
           {Object.entries(choices).map(
             ([choice, value]: [string, string], index) => (
-              <Pressable key={index} onPress={() => handleAnswer(choice)}>
+              <Pressable key={index} onPress={() => handleAnswer(choice.toLowerCase())}>
                 <ChoiceCard
-                  choice={choice}
+                  choice={choice.toUpperCase()}
                   value={value}
-                  active={choice === answers[currentIndex]}
+                  active={choice.toLowerCase() === answers[currentIndex]}
                 />
               </Pressable>
             )
