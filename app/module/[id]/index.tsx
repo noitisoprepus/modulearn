@@ -114,18 +114,17 @@ export default function Module() {
     const isFirstTopic = topicIndex === 0;
     const isLastTopic = topicIndex === topics.length - 1;
 
+    // Default commands
     const commands: string[] = ["read", "home"];
     const prompts: string[] = [];
 
-    // Default commands
     prompts.push(`Say "read" to start reading.`);
-    prompts.push(`Say "home" to go to the home screen.`);
-
+    
     if (!isFirstTopic) {
       commands.push("previous");
       prompts.push(`Say "previous" to go back to the previous topic.`);
     }
-
+    
     if (!isLastTopic) {
       commands.push("next");
       prompts.push(`Say "next" to go to the next topic.`);
@@ -133,6 +132,8 @@ export default function Module() {
       commands.push("quiz");
       prompts.push(`Say "quiz" to take the quiz.`);
     }
+    
+    prompts.push(`Say "home" to go to the home screen.`);
 
     const fullVoicePrompt = [initialMessage, ...prompts].filter(Boolean).join("\n");
 

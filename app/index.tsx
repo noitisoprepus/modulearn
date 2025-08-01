@@ -6,7 +6,6 @@ import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useAppStore } from "@/store/appStore";
 import { useModuleStore } from "@/store/moduleStore";
 import { useSpeechStore } from "@/store/speechStore";
-import { numberWordsMap } from "@/utils/speechUtils";
 import { router } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
@@ -21,17 +20,13 @@ export default function Index() {
     } = useSpeechStore();
 
   const { modulePrompt, moduleCommands } = useMemo(() => {
-    let prompt = "Say the number of the module you want to open.";
+    let prompt = `Say "module" plus the number of the module you want to open.`;
     const commands: string[] = [];
 
     modules.forEach((mod, i) => {
       const indexString = (i + 1).toString();
-      const word = Object.keys(numberWordsMap).find(key => numberWordsMap[key] === indexString);
-      
-      if (word) {
-        prompt += ` Module ${indexString}: ${mod.title}.`;
-        commands.push(word);
-      }
+      prompt += ` Module ${indexString}: ${mod.title}.`;
+      commands.push(`module ${indexString}`);
     });
 
     return { modulePrompt: prompt, moduleCommands: commands };
@@ -42,7 +37,8 @@ export default function Index() {
       setVoicePrompt(modulePrompt);
       setVoiceCommands(moduleCommands);
       setCommandCallback((command: string) => {
-        const index = parseInt(numberWordsMap[command]) - 1;
+        const selectedNumber = command.split("module ")[1];
+        const index = parseInt(selectedNumber) - 1;
         setModuleIndex(index);
         router.navigate("/module/[id]");
       });

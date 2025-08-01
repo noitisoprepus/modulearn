@@ -23,12 +23,12 @@ export default function Quiz() {
   const { answers, setAnswers } = useQuizStore();
   const { moduleIndex } = useModuleStore();
   const {
-      setIsSpeaking,
-      setShouldRecognize,
-      setVoiceCommands,
-      setVoicePrompt,
-      setCommandCallback,
-    } = useSpeechStore();
+    setIsSpeaking,
+    setShouldRecognize,
+    setVoiceCommands,
+    setVoicePrompt,
+    setCommandCallback,
+  } = useSpeechStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const moduleData = modules[moduleIndex ?? 0] ?? null;
@@ -95,18 +95,20 @@ export default function Quiz() {
         setIsSpeaking(false);
 
         const commands = ["question"];
-        const choiceCommands = Object.keys(choices);
-        commands.push(...choiceCommands);
+        for (const key of Object.keys(choices)) {
+          commands.push(`choice ${key}`);
+        }
 
         // Prompt to choose an answer
-        setVoicePrompt(`Say the letter of your selected answer. To repeat the question, say "question".`);
+        setVoicePrompt(`Say "choice" plus the letter of your selected answer. To repeat the question, say "question".`);
         setVoiceCommands(commands);
         setCommandCallback((command: string) => {
           if (command === "question") {
             readQuestion();
           }
           else {
-            handleAnswer(command);
+            const selectedAnswer = command.split("choice ")[1];
+            handleAnswer(selectedAnswer);
             setupQuizCommands(`What do you want to do now?`);
             setShouldRecognize(true);
           }
@@ -133,7 +135,7 @@ export default function Quiz() {
       onComplete: () => {
         setIsSpeaking(false);
 
-        // Prompt to choose an answer
+        // Prompt what to do next
         setupQuizCommands(`What do you want to do now?`);
         setShouldRecognize(true);
       },
@@ -142,29 +144,29 @@ export default function Quiz() {
   };
 
   const handleQuizCommand = (command: string) => {
-      switch (command) {
-        case "question":
-          readQuestion();
-          break;
-        case "answer":
-          readAnswer();
-          break;
-        case "module":
-          router.navigate("/module/[id]");
-          break;
-        case "next":
-          handleNext();
-          break;
-        case "previous":
-          handlePrev();
-          break;
-        case "submit":
-          router.navigate("/module/[id]/results");
-          break;
-        default:
-          break;
-      }
-    };
+    switch (command) {
+      case "question":
+        readQuestion();
+        break;
+      case "answer":
+        readAnswer();
+        break;
+      case "module":
+        router.navigate("/module/[id]");
+        break;
+      case "next":
+        handleNext();
+        break;
+      case "previous":
+        handlePrev();
+        break;
+      case "submit":
+        router.navigate("/module/[id]/results");
+        break;
+      default:
+        break;
+    }
+  };
 
   const setupQuizCommands = (initialMessage: string = "") => {
     if (!moduleData) return;
@@ -172,19 +174,18 @@ export default function Quiz() {
     const isFirstQuestion = currentIndex === 0;
     const isLastQuestion = currentIndex === numberOfQuestions - 1;
 
+    // Default commands
     const commands: string[] = ["question", "answer", "module"];
     const prompts: string[] = [];
 
-    // Default commands
     prompts.push(`Say "question" to read the question.`);
     prompts.push(`Say "answer" to read your answer.`);
-    prompts.push(`Say "module" to go back to the module.`);
-
+    
     if (!isFirstQuestion) {
       commands.push("previous");
       prompts.push(`Say "previous" to go back to the previous question.`);
     }
-
+    
     if (!isLastQuestion) {
       commands.push("next");
       prompts.push(`Say "next" to go to the next question.`);
@@ -192,7 +193,9 @@ export default function Quiz() {
       commands.push("submit");
       prompts.push(`Say "submit" to submit your answers.`);
     }
-
+    
+    prompts.push(`Say "module" to go back to the module.`);
+    
     const fullVoicePrompt = [initialMessage, ...prompts].filter(Boolean).join("\n");
 
     setVoicePrompt(fullVoicePrompt);
