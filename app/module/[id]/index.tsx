@@ -23,9 +23,9 @@ export default function Module() {
   } = useSpeechStore();
   const [topicIndex, setTopicIndex] = useState(0);
 
-  const moduleData = moduleIndex !== null ? modules[moduleIndex] : null;
-  const moduleTitle: string = moduleData?.title || "Untitled";
-  const currentTopic = moduleData?.data["topics"]?.[topicIndex] ?? null;
+  const moduleData = modules[moduleIndex ?? 0] ?? null;
+  const moduleTitle = moduleData?.title ?? "Untitled";
+  const currentTopic = moduleData?.data["topics"]?.[topicIndex] ?? [];
 
   const handleNext = () => {
     if (topicIndex < (moduleData?.data["topics"]?.length ?? 0) - 1) {
