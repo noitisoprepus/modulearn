@@ -37,7 +37,7 @@ export default function AnswerCard({
             : [styles.text, { color: colors.incorrect }]
           }
         >
-          {userAnswer.toUpperCase()}. {choices[userAnswer]}
+          {userAnswer?.toUpperCase()}. {choices[userAnswer]}
         </DynamicText>
       </View>
     </View>
