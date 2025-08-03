@@ -1,3 +1,4 @@
+import { useSpeechStore } from "@/store/speechStore";
 import * as Speech from "expo-speech";
 import { splitTextIntoChunks } from "./textUtils";
 
@@ -24,6 +25,7 @@ export function speakChunks({
     }
 
     Speech.speak(chunks[index], {
+      rate: useSpeechStore.getState().speechRate,
       onDone: () => {
         index++;
         speakNext();
