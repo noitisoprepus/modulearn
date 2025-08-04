@@ -14,9 +14,9 @@ const StreamZip = require("node-stream-zip");
 const path = require("path");
 
 // Directories
-const modulesDirPath = "./assets/modules";
-const mediaDirPath = "./assets/modules/media";
-const outputPath = "./data/modulesContentMap.ts";
+const modulesDirPath = path.resolve(__dirname, "..", "assets/modules");
+const mediaDirPath = path.resolve(__dirname, "..", "assets/modules/media");
+const outputPath = path.resolve(__dirname, "..", "data/modulesContentMap.ts");
 
 // TypeScript code containers
 const importJsonLines: string[] = [];
@@ -173,6 +173,6 @@ export const media: { [key: string]: ImageSourcePropType } = {
 	// Write the output file
   await fs.writeFile(outputPath, outputContent);
   console.log(
-    `Successfully generated modules content map in './data/modulesContentMap.ts'`
+    `Successfully generated modules content map in 'modulearn/data/modulesContentMap.ts'`
   );
 })();
