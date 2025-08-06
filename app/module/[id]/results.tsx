@@ -161,11 +161,11 @@ export default function Results() {
         router.navigate("/module/[id]/quiz");
         break;
       case "module":
-        handlePrev();
+        clearAnswers();
+        router.navigate("/module/[id]");
         break;
       case "home":
-        clearAnswers();
-        router.navigate("/");
+        handlePrev();
         break;
       default:
         break;
@@ -175,7 +175,7 @@ export default function Results() {
   const setupResultsCommands = (initialMessage: string = "") => {
     if (moduleAnswers.length === 0) return;
 
-    const commands: string[] = ["result", "corrects", "mistakes", "retake", "module", "home"];
+    const commands: string[] = ["result", "corrects", "mistakes", "retake", "home"];
     const prompts: string[] = [];
 
     // Default commands
@@ -183,7 +183,7 @@ export default function Results() {
     prompts.push(`Say "corrects" to read your correct answers.`);
     prompts.push(`Say "mistakes" to read your incorrect answers.`);
     prompts.push(`Say "retake" to retake the quiz.`);
-    prompts.push(`Say "module" to go back to the module.`);
+    // prompts.push(`Say "module" to go back to the module.`);
     prompts.push(`Say "home" to go back to the home screen.`);
 
     const fullVoicePrompt = [initialMessage, ...prompts].filter(Boolean).join("\n");
