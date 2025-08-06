@@ -11,8 +11,9 @@ import { useQuizStore } from "@/store/quizStore";
 import { useSpeechStore } from "@/store/speechStore";
 import { colors } from "@/styles/colors";
 import { speakChunks } from "@/utils/speechUtils";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
 type AssessmentItem = {
@@ -192,10 +193,12 @@ export default function Results() {
     setCommandCallback(handleResultsCommand);
   };
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
+    useSpeechStore.getState().clearSpeechState();
+
     if (useAppStore.getState().accessibilityEnabled)
       readResults();
-  }, []);
+  }, []));
 
   useVoiceCommands();
 

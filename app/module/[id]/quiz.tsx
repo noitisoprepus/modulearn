@@ -6,13 +6,15 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
 import { modules } from "@/data/modulesContentMap";
 import { useVoiceCommands } from "@/hooks/useVoiceCommands";
+import { useAppStore } from "@/store/appStore";
 import { useModuleStore } from "@/store/moduleStore";
 import { useQuizStore } from "@/store/quizStore";
 import { useSpeechStore } from "@/store/speechStore";
 import { speakChunks } from "@/utils/speechUtils";
+import { useFocusEffect } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 const sfxSource = require("@/assets/sfx/click.wav");
@@ -203,10 +205,12 @@ export default function Quiz() {
     setCommandCallback(handleQuizCommand);
   };
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
+    useSpeechStore.getState().clearSpeechState();
+
     setupQuizCommands(`Question number ${currentIndex + 1}.`);
     setShouldRecognize(true);
-  }, [currentIndex]);
+  }, [currentIndex]));
   
   useVoiceCommands();
 
@@ -228,7 +232,16 @@ export default function Quiz() {
           <Spacer size={20} />
           {Object.entries(choices).map(
             ([choice, value]: [string, string], index) => (
-              <Pressable key={index} onPress={() => handleAnswer(choice.toLowerCase())}>
+              <Pressable key={index} onPress={() => {
+                handleAnswer(choice.toLowerCase());
+                
+                if (useAppStore.getState().accessibilityEnabled) {
+                  useSpeechStore.getState().clearSpeechState();
+
+                  setupQuizCommands(`What do you want to do now?`);
+                  setShouldRecognize(true);
+                }
+              }}>
                 <ChoiceCard
                   choice={choice.toUpperCase()}
                   value={value}

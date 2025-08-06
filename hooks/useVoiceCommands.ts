@@ -98,8 +98,10 @@ export function useVoiceCommands() {
     const endListener = ExpoSpeechRecognitionModule.addListener("end", () => useSpeechStore.getState().setIsRecognizing(false));
     const resultListener = ExpoSpeechRecognitionModule.addListener("result", handleResult);
     const errorListener = ExpoSpeechRecognitionModule.addListener("error", (event) => {
-      console.warn("ExpoSpeechRecognition:", event.message);
-      retry();
+      if (event.error != "aborted") {
+        console.warn("ExpoSpeechRecognition:", event.message);
+        retry();
+      }
     });
 
     return () => {

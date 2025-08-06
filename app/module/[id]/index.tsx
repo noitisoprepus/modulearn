@@ -9,8 +9,9 @@ import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useModuleStore } from "@/store/moduleStore";
 import { useSpeechStore } from "@/store/speechStore";
 import { speakChunks } from "@/utils/speechUtils";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 export default function Module() {
   const { moduleIndex } = useModuleStore();
@@ -141,11 +142,13 @@ export default function Module() {
     setVoiceCommands(commands);
     setCommandCallback(handleVoiceCommand);
   };
+  
+  useFocusEffect(useCallback(() => {
+    useSpeechStore.getState().clearSpeechState();
 
-  useEffect(() => {
     setupVoiceCommands(`You are now in ${currentTopic.title}.`);
     setShouldRecognize(true);
-  }, [topicIndex]);
+  }, [topicIndex]));
 
   useVoiceCommands();
 

@@ -6,8 +6,9 @@ import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useAppStore } from "@/store/appStore";
 import { useModuleStore } from "@/store/moduleStore";
 import { useSpeechStore } from "@/store/speechStore";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function Index() {
@@ -87,8 +88,10 @@ export default function Index() {
     setVoiceCommands(commands);
     setCommandCallback(handleVoiceCommand);
   };
+  
+  useFocusEffect(useCallback(() => {
+    useSpeechStore.getState().clearSpeechState();
 
-  useEffect(() => {
     const { hasAppStarted, markAppStarted } = useAppStore.getState();
     
     const promptIntro = hasAppStarted
@@ -101,7 +104,8 @@ export default function Index() {
     if (!hasAppStarted) {
       markAppStarted();
     }
-  }, []);
+  }, []))
+
   useVoiceCommands();
 
   return (
