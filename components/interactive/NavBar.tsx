@@ -1,7 +1,7 @@
 import { colors } from "@/styles/colors";
 import { router } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Dimensions, Pressable, StyleSheet, View } from "react-native";
 import DynamicText from "../DynamicText";
 
 type ButtonVariant = "full" | "single";
@@ -16,6 +16,8 @@ type NavBarProps = {
   hasAnswered?: boolean;
 };
 
+const { width } = Dimensions.get("window");
+
 export default function NavBar(props: NavBarProps) {
   const { variant = "full" } = props;
 
@@ -29,20 +31,15 @@ export default function NavBar(props: NavBarProps) {
 
 function SingleNavBar({ onPrev }: NavBarProps) {
   return (
-    <Pressable onPress={onPrev}>
-      <View style={styles.single}>
-        <View style={styles.items}>
-          <DynamicText
-            style={{
-              color: colors.lightText,
-              fontWeight: "bold",
-            }}
-          >
+    <View style={styles.container}>
+      <View style={styles.items}>
+        <Pressable onPress={onPrev} style={styles.pressable}>
+          <DynamicText style={styles.text}>
             Return to Module
           </DynamicText>
-        </View>
+        </Pressable>
       </View>
-    </Pressable>
+    </View>
   );
 }
 
@@ -57,28 +54,20 @@ function FullNavBar({
   const isLastQuestion = currentIndex === pages - 1;
 
   return (
-    <View style={styles.full}>
+    <View style={styles.container}>
       <View style={styles.items}>
         <Pressable onPress={onPrev} disabled={currentIndex < 0}>
           <DynamicText
             style={
               currentIndex === 0
-                ? { color: colors.disabledText, fontWeight: "bold" }
-                : {
-                    color: colors.lightText,
-                    fontWeight: "bold",
-                  }
+                ? styles.disabledText
+                : styles.text
             }
           >
             Back
           </DynamicText>
         </Pressable>
-        <DynamicText
-          style={{
-            color: colors.lightText,
-            fontWeight: "black",
-          }}
-        >
+        <DynamicText style={styles.separator}>
           |
         </DynamicText>
         {!quiz ? (
@@ -91,14 +80,8 @@ function FullNavBar({
             <DynamicText
               style={
                 isLastQuestion
-                  ? {
-                      color: colors.lightText,
-                      fontWeight: "bold",
-                    }
-                  : {
-                      color: colors.disabledText,
-                      fontWeight: "bold",
-                    }
+                  ? styles.text
+                  : styles.disabledText
               }
             >
               Take the Quiz
@@ -110,37 +93,21 @@ function FullNavBar({
               router.back();
             }}
           >
-            <DynamicText
-              style={{
-                color: colors.lightText,
-                fontWeight: "bold",
-              }}
-            >
+            <DynamicText style={styles.text}>
               Return to Module
             </DynamicText>
           </Pressable>
         )}
 
-        <DynamicText
-          style={{
-            color: colors.lightText,
-            fontWeight: "black",
-          }}
-        >
+        <DynamicText style={styles.separator}>
           |
         </DynamicText>
         <Pressable onPress={onNext}>
           <DynamicText
             style={
               hasAnswered || !isLastQuestion
-                ? {
-                    color: colors.lightText,
-                    fontWeight: "bold",
-                  }
-                : {
-                    color: colors.disabledText,
-                    fontWeight: "bold",
-                  }
+                ? styles.text
+                : styles.disabledText
             }
           >
             {quiz && isLastQuestion ? "Submit" : "Next"}
@@ -152,32 +119,42 @@ function FullNavBar({
 }
 
 const styles = StyleSheet.create({
-  full: {
+  container: {
     position: "absolute",
     alignSelf: "center",
     bottom: 50,
-    width: 320,
+    width: width * 0.9,
     height: 45,
     backgroundColor: colors.primary,
     borderRadius: 10,
     elevation: 5,
+    overflow: "hidden",
   },
-  single: {
-    position: "absolute",
-    alignSelf: "center",
-    bottom: 50,
-    width: 320,
-    height: 45,
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    elevation: 5,
+  pressable: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
   },
   items: {
-    display: "flex",
     flexDirection: "row",
-    alignContent: "center",
+    alignItems: "center",
     justifyContent: "space-around",
-    paddingVertical: 10,
+    height: "100%",
     paddingHorizontal: 20,
+  },
+  text: {
+    color: colors.lightText,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  disabledText: {
+    color: colors.disabledText,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  separator: {
+    color: colors.lightText,
+    fontWeight: "900",
+    textAlign: "center",
   },
 });
