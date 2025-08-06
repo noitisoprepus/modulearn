@@ -35,7 +35,7 @@ function SingleNavBar({ onPrev }: NavBarProps) {
       <View style={styles.items}>
         <Pressable onPress={onPrev} style={styles.pressable}>
           <DynamicText style={styles.text}>
-            Return to Module
+            Continue
           </DynamicText>
         </Pressable>
       </View>
