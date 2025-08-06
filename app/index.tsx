@@ -133,12 +133,10 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   layout: {
-    display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    margin: "auto",
-    justifyContent: "space-between",
-    padding: 20,
+    justifyContent: "space-evenly",
+    paddingVertical: 20,
     rowGap: 20,
   },
 });
