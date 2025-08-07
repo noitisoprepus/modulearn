@@ -4,7 +4,8 @@ import { colors } from "@/styles/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Speech from "expo-speech";
 import { ExpoSpeechRecognitionModule } from "expo-speech-recognition";
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 
 type AppBarProps = {
   title?: string;
@@ -13,6 +14,7 @@ type AppBarProps = {
 export default function AppBar({ title }: AppBarProps) {
   const { accessibilityEnabled, setAccessibilityEnabled } = useAppStore();
   const { isSpeaking, isRecognizing, setShouldRecognize } = useSpeechStore();
+  const [expanded, setExpanded] = useState(false);
 
   const toggleAccessibility = (value: boolean) => {
     setAccessibilityEnabled(value);
@@ -28,7 +30,18 @@ export default function AppBar({ title }: AppBarProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>{title}</Text>
+      <Pressable
+        style={styles.greetingContainer}
+        onPress={() => setExpanded(prev => !prev)}
+      >
+        <Text
+          style={styles.greeting}
+          numberOfLines={expanded ? undefined : 1}
+          ellipsizeMode="tail"
+        >
+          {title}
+        </Text>
+      </Pressable>
       <View style={styles.accessibilityToggle}>
         <MaterialIcons
           name="record-voice-over"
@@ -57,11 +70,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 100, // Always on top
   },
+  greetingContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
   greeting: {
     fontFamily: "GermaniaOne",
     fontSize: 24,
     fontWeight: "600",
     color: colors.lightText,
+    flexShrink: 1,
   },
   accessibilityToggle: {
     flexDirection: "row",
