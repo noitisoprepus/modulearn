@@ -14,7 +14,7 @@ type TextBlock = {
 
 type ImageBlock = {
   type: "image";
-  src: string;
+  imgSrc: string;
   caption: string;
 };
 
@@ -50,7 +50,7 @@ export default function Section({ sectionTitle, content }: SectionProps) {
               );
             case "image":
               // Extract the file base name from a file path
-              const filename = block.src.replace(/^.*[\\/]/, "").replace(/\.[^/.]+$/, "");
+              const filename = block.imgSrc.replace(/^.*[\\/]/, "").replace(/\.[^/.]+$/, "");
               return (
                 <CaptionedImage
                   key={index}
