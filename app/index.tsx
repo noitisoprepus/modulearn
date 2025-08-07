@@ -137,10 +137,10 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   layout: {
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
-    paddingVertical: 20,
+    padding: 20,
     rowGap: 20,
   },
 });
