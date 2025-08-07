@@ -27,9 +27,18 @@ export default function PressableCard({
     <Pressable style={styles.card} onPress={onPress}>
       <Image source={imgSource} style={styles.image} />
       <View style={styles.titles}>
-        <Text style={styles.text}>{module}</Text>
+        <Text style={styles.text}>
+          {module}
+        </Text>
         <Spacer size={10} />
-        <Text style={styles.text}>{title}</Text>
+        <Text
+          style={styles.text}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
+        >
+          {title}
+        </Text>
       </View>
     </Pressable>
   );
@@ -51,7 +60,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     shadowColor: colors.shadow,
     height: 250,
-    width: 170,
+    width: "100%",
   },
   text: {
     fontSize: 16,
