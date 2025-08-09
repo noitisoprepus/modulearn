@@ -1,18 +1,21 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { ImageSourcePropType, StyleSheet, View } from "react-native";
+import CaptionedImage from "./CaptionedImage";
 import DynamicText from "./DynamicText";
 
 type QuestionCardProps = {
   index: number;
   question: string;
-  img?: string;
+  imgSrc?: ImageSourcePropType;
+  imgCaption?: string;
   questions: number;
 };
 
 export default function QuestionCard({
   question,
   index,
-  img,
+  imgSrc,
+  imgCaption,
   questions,
 }: QuestionCardProps) {
   return (
@@ -23,11 +26,8 @@ export default function QuestionCard({
       <DynamicText style={[styles.text, styles.question]}>
         {question}
       </DynamicText>
-      {img && (
-        <Image
-          source={require("@/assets/images/raccoon.webp")}
-          style={styles.image}
-        />
+      {imgSrc && (
+        <CaptionedImage imgSrc={imgSrc} caption={imgCaption} />
       )}
     </View>
   );
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   layout: {
     height: "auto",
     width: 350,
-    // backgroundColor: "red",
     gap: 20,
     alignItems: "center",
   },
@@ -46,15 +45,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tracker: {
-    // fontSize: 10,
     fontWeight: "bold",
   },
   question: {
     fontSize: 20,
-  },
-  image: {
-    width: 300,
-    height: 250,
-    objectFit: "cover",
   },
 });
