@@ -4,7 +4,7 @@ import NavBar from "@/components/interactive/NavBar";
 import QuestionCard from "@/components/QuestionCard";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Spacer from "@/components/Spacer";
-import { modules } from "@/data/modulesContentMap";
+import { media, modules } from "@/data/modulesContentMap";
 import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { useAppStore } from "@/store/appStore";
 import { useModuleStore } from "@/store/moduleStore";
@@ -15,7 +15,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { ImageSourcePropType, Pressable, StyleSheet, View } from "react-native";
 
 const sfxSource = require("@/assets/sfx/click.wav");
 
@@ -40,7 +40,8 @@ export default function Quiz() {
 
   const question = currentQuestion["question"] ?? null;
   const choices: Record<string, string> = currentQuestion["choices"] ?? null;
-  const questionImage = currentQuestion["imgSrc"];
+  const questionImage: ImageSourcePropType = media[currentQuestion["imgSrc"]];
+  const questionImageCaption = currentQuestion["caption"];
   const numberOfQuestions = moduleAssessment.length;
   
   const filteredAnswer = answers.filter(Boolean);
@@ -83,8 +84,12 @@ export default function Quiz() {
     const content: string[] = [];
     content.push(`${question}`);
 
-    // TODO: Add caption to question image
+    // Image caption
+    if (questionImageCaption) {
+      content.push(` An image is showing: ${questionImageCaption}`);
+    }
 
+    // Choices
     for (const choice of Object.entries(choices)) {
       content.push(`${choice[0]}, ${choice[1]}.`);
     }
@@ -225,7 +230,8 @@ export default function Quiz() {
             <QuestionCard
               index={currentIndex + 1}
               question={question}
-              img={questionImage}
+              imgSrc={questionImage}
+              imgCaption={questionImageCaption}
               questions={numberOfQuestions}
             />
           </View>
