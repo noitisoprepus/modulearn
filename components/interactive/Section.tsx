@@ -9,6 +9,7 @@ import RecallCard from "./RecallCard";
 
 type TextBlock = {
   type: "text";
+  header: string;
   content: string;
 };
 
@@ -37,16 +38,24 @@ type SectionProps = {
 export default function Section({ sectionTitle, content }: SectionProps) {
   return (
     <View>
-      <DynamicText variant="header">{sectionTitle}</DynamicText>
-      <Spacer size={20} />
+      <DynamicText variant="title">{sectionTitle}</DynamicText>
+      <Spacer size={10} />
       <View style={styles.layout}>
         {content.map((block, index) => {
           switch (block.type) {
             case "text":
               return (
-                <DynamicText key={index} variant="paragraph">
-                  {block.content}
-                </DynamicText>
+                <View key={index}>
+                  {block.header && (
+                    <DynamicText key={"header" + index} variant="header">
+                      {block.header}
+                    </DynamicText>
+                  )}
+                  <Spacer />
+                  <DynamicText key={"content" + index} variant="paragraph">
+                    {block.content}
+                  </DynamicText>
+                </View>
               );
             case "image":
               // Extract the file base name from a file path
@@ -94,6 +103,6 @@ export default function Section({ sectionTitle, content }: SectionProps) {
 
 const styles = StyleSheet.create({
   layout: {
-    gap: 30,
+    gap: 12,
   },
 });
