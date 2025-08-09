@@ -50,6 +50,9 @@ export default function Module() {
     for (const section of currentTopic.sections) {
       switch (section.type) {
         case "text":
+          if (section.header) {
+            content.push(` Now reading: ${section.header}.`);
+          }
           content.push(`${section.content} `);
           break;
         case "image":
