@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
-type TextVariant = "header" | "paragraph" | "caption";
+type TextVariant = "title" | "header" | "paragraph" | "caption";
 
 type DynamicTextProps = {
   variant?: TextVariant;
@@ -17,6 +17,9 @@ export default function DynamicText({
   let textStyle;
 
   switch (variant) {
+    case "title":
+      textStyle = styles.title;
+      break;
     case "header":
       textStyle = styles.header;
       break;
@@ -32,10 +35,17 @@ export default function DynamicText({
 }
 
 const styles = StyleSheet.create({
-  header: {
+  title: {
     letterSpacing: -1,
     fontWeight: "black",
     fontSize: 20,
+    fontFamily: "KantumruyProBold",
+    textAlign: "center",
+  },
+  header: {
+    letterSpacing: -1,
+    fontWeight: "700",
+    fontSize: 18,
     fontFamily: "KantumruyProBold",
   },
   paragraph: {
