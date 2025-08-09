@@ -182,7 +182,7 @@ export default function Quiz() {
     const isLastQuestion = currentIndex === numberOfQuestions - 1;
 
     // Default commands
-    const commands: string[] = ["question", "answer", "module"];
+    const commands: string[] = ["question", "answer"];
     const prompts: string[] = [];
 
     prompts.push(`Say "question" to read the question.`);
@@ -201,7 +201,7 @@ export default function Quiz() {
       prompts.push(`Say "submit" to submit your answers.`);
     }
     
-    prompts.push(`Say "module" to go back to the module.`);
+    // prompts.push(`Say "module" to go back to the module.`);
     
     const fullVoicePrompt = [initialMessage, ...prompts].filter(Boolean).join("\n");
 
