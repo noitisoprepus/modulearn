@@ -39,13 +39,14 @@ export default function Section({ sectionTitle, content }: SectionProps) {
   return (
     <View>
       <DynamicText variant="title">{sectionTitle}</DynamicText>
-      <Spacer size={10} />
+      <Spacer />
       <View style={styles.layout}>
         {content.map((block, index) => {
           switch (block.type) {
             case "text":
               return (
                 <View key={index}>
+                  <Spacer />
                   {block.header && (
                     <DynamicText key={"header" + index} variant="header">
                       {block.header}
