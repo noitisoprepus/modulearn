@@ -147,7 +147,7 @@ export default function Results() {
 
   const handleResultsCommand = (command: string) => {
     switch (command) {
-      case "result":
+      case "score":
         readResults();
         break;
       case "corrects":
@@ -175,11 +175,11 @@ export default function Results() {
   const setupResultsCommands = (initialMessage: string = "") => {
     if (moduleAnswers.length === 0) return;
 
-    const commands: string[] = ["result", "corrects", "mistakes", "retake", "home"];
+    const commands: string[] = ["score", "corrects", "mistakes", "retake", "home"];
     const prompts: string[] = [];
 
     // Default commands
-    prompts.push(`Say "result" to read your results.`);
+    prompts.push(`Say "score" to read your score.`);
     prompts.push(`Say "corrects" to read your correct answers.`);
     prompts.push(`Say "mistakes" to read your incorrect answers.`);
     prompts.push(`Say "retake" to retake the quiz.`);
