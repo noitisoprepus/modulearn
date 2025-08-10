@@ -55,6 +55,14 @@ export default function Module() {
           }
           content.push(`${section.content} `);
           break;
+        case "list":
+          section.entries.map((entry: string, index: number) => {
+            if (section.category === "ordered") {
+              content.push(`${index + 1}: `);
+            }
+            content.push(`${entry} `);
+          })
+          break;
         case "image":
           if (section.caption) {
             content.push(` An image is showing: ${section.caption}`);
