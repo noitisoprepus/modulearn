@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cardDefault,
   },
   cards: {
-    margin: "auto",
     gap: 20,
   },
 });
