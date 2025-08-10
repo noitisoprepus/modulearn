@@ -116,7 +116,7 @@ export default function Quiz() {
           }
           else {
             const selectedAnswer = command.split("choice ")[1];
-            handleAnswer(selectedAnswer);
+            handleAnswer(selectedAnswer.toLowerCase());
             setupQuizCommands(`What do you want to do now?`);
             setShouldRecognize(true);
           }
@@ -186,7 +186,7 @@ export default function Quiz() {
     const commands: string[] = ["question", "answer"];
     const prompts: string[] = [];
 
-    prompts.push(`Say "question" to read the question.`);
+    prompts.push(`Say "question" to read and answer the question.`);
     prompts.push(`Say "answer" to read your answer.`);
     
     if (!isFirstQuestion) {
