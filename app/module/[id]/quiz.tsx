@@ -275,9 +275,6 @@ export default function Quiz() {
 
 const styles = StyleSheet.create({
   layout: {
-    justifyContent: "center",
-    alignContent: "center",
-    margin: "auto",
     padding: 20,
     gap: 20,
   },
@@ -285,6 +282,6 @@ const styles = StyleSheet.create({
     gap: 40,
   },
   text: {
-    margin: "auto",
+    textAlign: "center",
   },
 });

@@ -10,29 +10,20 @@ type ChoiceCardProps = {
 };
 
 export default function ChoiceCard({ choice, value, active }: ChoiceCardProps) {
+  const cardStyle = [
+    styles.layout,
+    active && { backgroundColor: colors.secondary },
+  ];
+  const textStyle = [
+    styles.text,
+    active && { color: colors.lightText },
+  ];
+
   return (
-    <View
-      style={
-        active
-          ? [styles.layout, { backgroundColor: colors.secondary }]
-          : styles.layout
-      }
-    >
+    <View style={cardStyle}>
       <View style={styles.textLayout}>
-        <DynamicText
-          style={
-            active ? [styles.text, { color: colors.lightText }] : styles.text
-          }
-        >
-          {choice.toUpperCase()}.
-        </DynamicText>
-        <DynamicText
-          style={
-            active ? [styles.text, { color: colors.lightText }] : styles.text
-          }
-        >
-          {value}
-        </DynamicText>
+        <DynamicText style={textStyle}>{choice.toUpperCase()}.</DynamicText>
+        <DynamicText style={[textStyle, styles.valueText]}>{value}</DynamicText>
       </View>
     </View>
   );
@@ -40,21 +31,23 @@ export default function ChoiceCard({ choice, value, active }: ChoiceCardProps) {
 
 const styles = StyleSheet.create({
   layout: {
-    width: 350,
-    height: 70,
+    minHeight: 60,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     elevation: 5,
     backgroundColor: colors.cardDefault,
     borderRadius: 10,
+    justifyContent: "center",
   },
   textLayout: {
     flexDirection: "row",
-    paddingHorizontal: 50,
-    paddingVertical: 20,
-    margin: "auto",
-    gap: 20,
+    alignItems: "center",
   },
   text: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 18,
+  },
+  valueText: {
+    paddingHorizontal: 10,
   },
 });
