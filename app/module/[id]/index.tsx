@@ -11,7 +11,8 @@ import { useSpeechStore } from "@/store/speechStore";
 import { speakChunks } from "@/utils/speechUtils";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ScrollView } from "react-native";
 
 export default function Module() {
   const { moduleIndex } = useModuleStore();
@@ -27,6 +28,13 @@ export default function Module() {
   const moduleData = modules[moduleIndex ?? 0] ?? null;
   const moduleTitle = moduleData?.title ?? "Untitled";
   const currentTopic = moduleData?.data["topics"]?.[topicIndex] ?? [];
+
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollTo({ y: 0 });
+  }, [topicIndex]);
+
 
   const handleNext = () => {
     if (topicIndex < (moduleData?.data["topics"]?.length ?? 0) - 1) {
@@ -165,7 +173,7 @@ export default function Module() {
 
   return (
     <>
-      <ScreenWrapper showAppBar appBarTitle={moduleTitle}>
+      <ScreenWrapper showAppBar appBarTitle={moduleTitle} scrollViewRef={scrollViewRef}>
         <Wrapper paddingHorizontal={10} paddingVertical={20} itemsGap={8}>
           {currentTopic ? (
             <Section
