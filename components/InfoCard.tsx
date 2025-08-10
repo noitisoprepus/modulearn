@@ -44,12 +44,11 @@ export default function InfoCard({
 
 const styles = StyleSheet.create({
   card: {
-    margin: "auto",
     borderRadius: 10,
     elevation: 6,
     shadowColor: colors.shadow,
-    width: 330,
     height: "auto",
+    marginHorizontal: 20,
     paddingVertical: 15,
     paddingHorizontal: 10,
     wordWrap: "wrap",
