@@ -13,6 +13,13 @@ type TextBlock = {
   content: string;
 };
 
+type ListBlock = {
+  type: "list";
+  category: string;
+  hasHeader: boolean;
+  entries: string[];
+}
+
 type ImageBlock = {
   type: "image";
   imgSrc: string;
@@ -33,7 +40,7 @@ type RecallCardBlock = {
 
 type SectionProps = {
   sectionTitle: string;
-  content: (TextBlock | ImageBlock | InfoCardBlock | RecallCardBlock)[];
+  content: (TextBlock | ListBlock | ImageBlock | InfoCardBlock | RecallCardBlock)[];
 };
 
 export default function Section({ sectionTitle, content }: SectionProps) {
@@ -59,6 +66,41 @@ export default function Section({ sectionTitle, content }: SectionProps) {
                   <DynamicText key={"content" + index} variant="paragraph">
                     {block.content}
                   </DynamicText>
+                </View>
+              );
+            case "list":
+              return (
+                <View key={index} style={styles.listContainer}>
+                  {block.entries.map((entry, index) => {
+                    let headerPart = "";
+                    let contentPart = entry;
+
+                    if (block.hasHeader) {
+                      const dashIndex = entry.indexOf("-");
+                      if (dashIndex !== -1) {
+                        headerPart = entry.slice(0, dashIndex).trim();
+                        contentPart = entry.slice(dashIndex + 1).trim();
+                      }
+                    }
+
+                    const bullet = block.category === "ordered" ? `${index + 1}.` : "\u2022"; // \u2022 = bullet
+
+                    return (
+                      <View key={index} style={styles.listItem}>
+                        <DynamicText style={styles.bullet}>{bullet}</DynamicText>
+                        <View>
+                          {block.hasHeader && headerPart ? (
+                            <DynamicText style={styles.listHeader}>
+                              {headerPart}{" - "}
+                              <DynamicText style={styles.listText}>{contentPart}</DynamicText>
+                            </DynamicText>
+                          ) : (
+                            <DynamicText style={styles.listText}>{entry}</DynamicText>
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
                 </View>
               );
             case "image":
@@ -108,6 +150,24 @@ export default function Section({ sectionTitle, content }: SectionProps) {
 
 const styles = StyleSheet.create({
   layout: {
-    gap: 12,
+    gap: 10,
+  },
+  listContainer: {
+    gap: 5,
+    marginLeft: 10,
+    marginRight: 20,
+  },
+  listItem: {
+    flexDirection: "row",
+  },
+  bullet: {
+    width: 24,
+    fontWeight: "bold",
+  },
+  listHeader: {
+    fontWeight: "bold",
+  },
+  listText: {
+    fontWeight: "normal",
   },
 });
