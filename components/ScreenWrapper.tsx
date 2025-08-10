@@ -8,6 +8,7 @@ type ScreenWrapperProps = PropsWithChildren<{
   appBarTitle?: string;
   backgroundColor?: string;
   contentBackgroundColor?: string;
+  scrollViewRef?: React.RefObject<ScrollView | null>;
 }>;
 
 export default function ScreenWrapper({
@@ -15,6 +16,7 @@ export default function ScreenWrapper({
   appBarTitle,
   backgroundColor = colors.primary,
   contentBackgroundColor = colors.surface,
+  scrollViewRef,
   children,
 }: ScreenWrapperProps) {
   return (
@@ -22,6 +24,7 @@ export default function ScreenWrapper({
       {showAppBar && <AppBar title={appBarTitle} />}
       <ScrollView
         style={[styles.container, { backgroundColor: contentBackgroundColor }]}
+        ref={scrollViewRef}
       >
         {children}
       </ScrollView>
