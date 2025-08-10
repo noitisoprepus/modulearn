@@ -42,6 +42,7 @@ export default function Quiz() {
   const choices: Record<string, string> = currentQuestion["choices"] ?? null;
   const questionImage: ImageSourcePropType = media[currentQuestion["imgSrc"]];
   const questionImageCaption = currentQuestion["caption"];
+  const questionImageAttribution = currentQuestion["attribution"];
   const numberOfQuestions = moduleAssessment.length;
   
   const filteredAnswer = answers.filter(Boolean);
@@ -232,6 +233,7 @@ export default function Quiz() {
               question={question}
               imgSrc={questionImage}
               imgCaption={questionImageCaption}
+              imgAttribution={questionImageAttribution}
               questions={numberOfQuestions}
             />
           </View>

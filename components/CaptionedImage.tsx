@@ -5,9 +5,10 @@ import DynamicText from "./DynamicText";
 type CaptionImageProps = {
   imgSrc: ImageSourcePropType;
   caption?: string;
+  attribution?: string;
 };
 
-export default function CaptionedImage({ imgSrc, caption }: CaptionImageProps) {
+export default function CaptionedImage({ imgSrc, caption, attribution }: CaptionImageProps) {
   const [ratio, setRatio] = useState(1);
 
   useEffect(() => {
@@ -27,6 +28,11 @@ export default function CaptionedImage({ imgSrc, caption }: CaptionImageProps) {
           {caption}
         </DynamicText>
       )}
+      {attribution && (
+        <DynamicText variant="attribution" style={styles.attribution}>
+          {attribution}
+        </DynamicText>
+      )}
     </View>
   );
 }
@@ -44,4 +50,7 @@ const styles = StyleSheet.create({
   caption: {
     marginTop: 10,
   },
+  attribution: {
+    marginTop: 4,
+  }
 });

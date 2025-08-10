@@ -8,6 +8,7 @@ type QuestionCardProps = {
   question: string;
   imgSrc?: ImageSourcePropType;
   imgCaption?: string;
+  imgAttribution?: string;
   questions: number;
 };
 
@@ -16,6 +17,7 @@ export default function QuestionCard({
   index,
   imgSrc,
   imgCaption,
+  imgAttribution,
   questions,
 }: QuestionCardProps) {
   return (
@@ -27,7 +29,7 @@ export default function QuestionCard({
         {question}
       </DynamicText>
       {imgSrc && (
-        <CaptionedImage imgSrc={imgSrc} caption={imgCaption} />
+        <CaptionedImage imgSrc={imgSrc} caption={imgCaption} attribution={imgAttribution} />
       )}
     </View>
   );

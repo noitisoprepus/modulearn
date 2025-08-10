@@ -1,7 +1,8 @@
+import { colors } from "@/styles/colors";
 import React from "react";
-import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
+import { Linking, StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
-type TextVariant = "title" | "header" | "paragraph" | "caption";
+type TextVariant = "title" | "header" | "paragraph" | "caption" | "attribution";
 
 type DynamicTextProps = {
   variant?: TextVariant;
@@ -26,12 +27,50 @@ export default function DynamicText({
     case "caption":
       textStyle = styles.caption;
       break;
+    case "attribution":
+      textStyle = styles.attribution;
+      break;
     default:
       textStyle = styles.paragraph;
       break;
   }
 
+  if (variant === "attribution" && typeof children === "string") {
+    return (
+      <Text style={[textStyle, style]}>
+        {parseAttributionText(children)}
+      </Text>
+    );
+  }
+
   return <Text style={[textStyle, style]}>{children}</Text>;
+}
+
+function parseAttributionText(text: string) {
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+
+  text.replace(regex, (match, linkText, linkUrl, offset) => {
+    if (offset > lastIndex) {
+      parts.push(text.slice(lastIndex, offset));
+    }
+
+    parts.push(
+      <Text key={offset} style={styles.link} onPress={() => Linking.openURL(linkUrl)}>
+        {linkText}
+      </Text>
+    );
+
+    lastIndex = offset + match.length;
+    return match;
+  });
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
 }
 
 const styles = StyleSheet.create({
@@ -57,8 +96,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "KantumruyProLightItalic",
     letterSpacing: -0.5,
-    maxWidth: 220,
+    marginHorizontal: 30,
     wordWrap: "wrap",
     textAlign: "center",
+  },
+  attribution: {
+    marginHorizontal: 40,
+    fontSize: 11,
+    fontFamily: "KantumruyProLightItalic",
+    letterSpacing: -0.25,
+    color: colors.disabled,
+    textAlign: "center",
+  },
+  link: {
+    color: "#007AFF",
+    textDecorationLine: "underline",
   },
 });

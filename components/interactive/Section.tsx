@@ -16,7 +16,8 @@ type TextBlock = {
 type ImageBlock = {
   type: "image";
   imgSrc: string;
-  caption: string;
+  caption?: string;
+  attribution?: string;
 };
 
 type InfoCardBlock = {
@@ -46,13 +47,15 @@ export default function Section({ sectionTitle, content }: SectionProps) {
             case "text":
               return (
                 <View key={index}>
-                  <Spacer />
                   {block.header && (
-                    <DynamicText key={"header" + index} variant="header">
-                      {block.header}
-                    </DynamicText>
+                    <>
+                      <Spacer />
+                      <DynamicText key={"header" + index} variant="header">
+                        {block.header}
+                      </DynamicText>
+                      <Spacer />
+                    </>
                   )}
-                  <Spacer />
                   <DynamicText key={"content" + index} variant="paragraph">
                     {block.content}
                   </DynamicText>
@@ -65,6 +68,7 @@ export default function Section({ sectionTitle, content }: SectionProps) {
                 <CaptionedImage
                   key={index}
                   caption={block.caption}
+                  attribution={block.attribution}
                   imgSrc={media[filename]}
                 />
               );
