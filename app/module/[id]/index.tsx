@@ -183,7 +183,7 @@ export default function Module() {
           ) : (
             <DynamicText>Module content unavailable...</DynamicText>
           )}
-          <Spacer size={80} />
+          <Spacer size={50} />
         </Wrapper>
       </ScreenWrapper>
       {/* for some reason, putting the navbar inside screen wrapper

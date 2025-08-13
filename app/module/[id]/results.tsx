@@ -228,6 +228,7 @@ export default function Results() {
             )}
           </View>
         </View>
+        <Spacer size={50} />
       </ScreenWrapper>
       <NavBar variant="single" onPrev={handlePrev} />
     </>
