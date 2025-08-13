@@ -130,7 +130,7 @@ export default function Index() {
           );
         })}
       </View>
-      <Spacer size={50} />
+      <Spacer size={80} />
     </ScreenWrapper>
   );
 }

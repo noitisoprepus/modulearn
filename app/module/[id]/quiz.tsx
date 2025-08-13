@@ -259,7 +259,7 @@ export default function Quiz() {
             )
           )}
         </View>
-        <Spacer size={100} />
+        <Spacer size={80} />
       </ScreenWrapper>
       <NavBar
         quiz
