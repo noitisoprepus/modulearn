@@ -56,6 +56,8 @@ export default function Results() {
   const readResults = () => {
     if (moduleAnswers.length === 0) return;
 
+    if (!useAppStore.getState().accessibilityEnabled) return;
+
     // Prepare the results transcription
     const fullText = `You got ${correctItems} out of ${assessmentItems} questions correct.`;
     setIsSpeaking(true);
@@ -196,8 +198,7 @@ export default function Results() {
   useFocusEffect(useCallback(() => {
     useSpeechStore.getState().clearSpeechState();
 
-    if (useAppStore.getState().accessibilityEnabled)
-      readResults();
+    readResults();
   }, []));
 
   useVoiceCommands();
@@ -228,7 +229,7 @@ export default function Results() {
             )}
           </View>
         </View>
-        <Spacer size={80} />
+        <Spacer size={50} />
       </ScreenWrapper>
       <NavBar variant="single" onPrev={handlePrev} />
     </>
